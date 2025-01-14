@@ -18,7 +18,7 @@ public class ChessBoard {
      * @param piece    the piece to add
      */
     public void addPiece(ChessPosition position, ChessPiece piece) {
-        board[position.getRow()][position.getColumn()] = piece;
+        board[position.getRow()-1][position.getColumn()-1] = piece;
     }
 
     /**
@@ -31,12 +31,12 @@ public class ChessBoard {
     public ChessPiece getPiece(ChessPosition position) {
         throw new RuntimeException("Not implemented");
     }
-
+//remember to subtract one
     /**
      * Sets the board to the default starting board
      * (How the game of chess normally starts)
      */
     public void resetBoard() {
-
+//if you call get piece and add piece then the subtracting one is already in place
     }
 }
