@@ -28,6 +28,35 @@ public class ChessPiece {
         PAWN
     }
 
+    @Override
+    public String toString() {
+        // First, get the symbol for the piece type (uppercase for white, lowercase for black)
+        String pieceSymbol = "";
+        switch (type) {
+            case KING:
+                pieceSymbol = "K";
+                break;
+            case QUEEN:
+                pieceSymbol = "Q";
+                break;
+            case ROOK:
+                pieceSymbol = "R";
+                break;
+            case KNIGHT:
+                pieceSymbol = "N";
+                break;
+            case BISHOP:
+                pieceSymbol = "B";
+                break;
+            case PAWN:
+                pieceSymbol = "P";
+                break;
+        }
+
+        //uppercase if piece is white. lowercase if piece is black
+        return (color == ChessGame.TeamColor.WHITE) ? pieceSymbol : pieceSymbol.toLowerCase();
+    }
+
     /**
      * @return Which team this chess piece belongs to
      */
@@ -42,6 +71,10 @@ public class ChessPiece {
         return type;
     }
 
+
+
+
+
     /**
      * Calculates all the positions a chess piece can move to
      * Does not take into account moves that are illegal due to leaving the king in
@@ -54,6 +87,7 @@ public class ChessPiece {
 //        ableMoves = PieceMovesCalculator(board, myPosition);
 //        return ableMoves;
         throw new RuntimeException("Not implemented");
+
 
 }
 }

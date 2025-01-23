@@ -28,23 +28,6 @@ public class ChessBoard {
         return Arrays.deepHashCode(board);
     }
 
-    @Override
-    public String toString() {
-        StringBuilder myboard = new StringBuilder();
-        for (int i = 0; i < 8; i++) {
-            for (int j = 0; j < 8; j++) {
-                ChessPiece piece = board[i][j];
-                if (piece != null) {
-                    myboard.append(" " + piece.toString() + " ");  // Print piece
-                } else {
-                    myboard.append(" . ");  // Empty square
-                }
-            }
-            myboard.append("\n");  // Newline after each row
-        }
-        return myboard.toString();
-    }
-
     /**
      * Adds a chess piece to the chessboard
      *
@@ -151,5 +134,22 @@ public class ChessBoard {
         addPiece(new ChessPosition(7,8),bP8);
     }
 
+    @Override
+    public String toString() {
+        StringBuilder myboard = new StringBuilder();
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                ChessPiece piece = board[i][j];
+                if (piece != null) {
+                    myboard.append(" " + piece.toString() + " ");  // Print the piece's symbol
+                } else {
+                    myboard.append(" . ");  // Empty square
+                }
+            }
+            myboard.append("\n");  // Newline after each row
+        }
+        return myboard.toString();
+    }
 
 }
+
