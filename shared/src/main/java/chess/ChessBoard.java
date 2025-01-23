@@ -32,12 +32,13 @@ public class ChessBoard {
         ChessPiece result = board[position.getRow()-1][position.getColumn()-1];
         return result;
     }
-//remember to subtract one
+    //remember to subtract one
     /**
      * Sets the board to the default starting board
      * (How the game of chess normally starts)
      */
     public void resetBoard() {
-//if you call get piece and add piece then the subtracting one is already in place
+        //if you call get piece and add piece then the subtracting one is already in place
+
     }
 }
