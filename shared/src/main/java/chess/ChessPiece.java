@@ -52,7 +52,6 @@ public class ChessPiece {
                 pieceSymbol = "P";
                 break;
         }
-
         //uppercase if piece is white. lowercase if piece is black
         return (color == ChessGame.TeamColor.WHITE) ? pieceSymbol : pieceSymbol.toLowerCase();
     }
