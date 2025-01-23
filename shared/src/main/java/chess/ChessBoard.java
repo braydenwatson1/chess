@@ -29,7 +29,8 @@ public class ChessBoard {
      * position
      */
     public ChessPiece getPiece(ChessPosition position) {
-        throw new RuntimeException("Not implemented");
+        ChessPiece result = board[position.getRow()-1][position.getColumn()-1];
+        return result;
     }
 //remember to subtract one
     /**
