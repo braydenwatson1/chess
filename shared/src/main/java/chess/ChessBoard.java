@@ -77,23 +77,23 @@ public class ChessBoard {
         ChessPiece wP8 = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.PAWN);
 
         //add white power pieces to the board
-        addPiece(new ChessPosition(1,1),wR1);
-        addPiece(new ChessPosition(1,2),wN1);
-        addPiece(new ChessPosition(1,3),wB1);
-        addPiece(new ChessPosition(1,4),wQ);
-        addPiece(new ChessPosition(1,5),wK);
-        addPiece(new ChessPosition(1,6),wB2);
-        addPiece(new ChessPosition(1,7),wN2);
-        addPiece(new ChessPosition(1,8),wR2);
+        addPiece(new ChessPosition(8,1),wR1);
+        addPiece(new ChessPosition(8,2),wN1);
+        addPiece(new ChessPosition(8,3),wB1);
+        addPiece(new ChessPosition(8,4),wQ);
+        addPiece(new ChessPosition(8,5),wK);
+        addPiece(new ChessPosition(8,6),wB2);
+        addPiece(new ChessPosition(8,7),wN2);
+        addPiece(new ChessPosition(8,8),wR2);
         //add white pawns
-        addPiece(new ChessPosition(2,1),wP1);
-        addPiece(new ChessPosition(2,2),wP2);
-        addPiece(new ChessPosition(2,3),wP3);
-        addPiece(new ChessPosition(2,4),wP4);
-        addPiece(new ChessPosition(2,5),wP5);
-        addPiece(new ChessPosition(2,6),wP6);
-        addPiece(new ChessPosition(2,7),wP7);
-        addPiece(new ChessPosition(2,8),wP8);
+        addPiece(new ChessPosition(7,1),wP1);
+        addPiece(new ChessPosition(7,2),wP2);
+        addPiece(new ChessPosition(7,3),wP3);
+        addPiece(new ChessPosition(7,4),wP4);
+        addPiece(new ChessPosition(7,5),wP5);
+        addPiece(new ChessPosition(7,6),wP6);
+        addPiece(new ChessPosition(7,7),wP7);
+        addPiece(new ChessPosition(7,8),wP8);
 
 
         //black
@@ -115,23 +115,23 @@ public class ChessBoard {
         ChessPiece bP8 = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.PAWN);
 
         //add black power pieces to the board
-        addPiece(new ChessPosition(8,1),bR1);
-        addPiece(new ChessPosition(8,2),bN1);
-        addPiece(new ChessPosition(8,3),bB1);
-        addPiece(new ChessPosition(8,4),bQ);
-        addPiece(new ChessPosition(8,5),bK);
-        addPiece(new ChessPosition(8,6),bB2);
-        addPiece(new ChessPosition(8,7),bN2);
-        addPiece(new ChessPosition(8,8),bR2);
+        addPiece(new ChessPosition(1,1),bR1);
+        addPiece(new ChessPosition(1,2),bN1);
+        addPiece(new ChessPosition(1,3),bB1);
+        addPiece(new ChessPosition(1,4),bQ);
+        addPiece(new ChessPosition(1,5),bK);
+        addPiece(new ChessPosition(1,6),bB2);
+        addPiece(new ChessPosition(1,7),bN2);
+        addPiece(new ChessPosition(1,8),bR2);
         //add black pawns
-        addPiece(new ChessPosition(7,1),bP1);
-        addPiece(new ChessPosition(7,2),bP2);
-        addPiece(new ChessPosition(7,3),bP3);
-        addPiece(new ChessPosition(7,4),bP4);
-        addPiece(new ChessPosition(7,5),bP5);
-        addPiece(new ChessPosition(7,6),bP6);
-        addPiece(new ChessPosition(7,7),bP7);
-        addPiece(new ChessPosition(7,8),bP8);
+        addPiece(new ChessPosition(2,1),bP1);
+        addPiece(new ChessPosition(2,2),bP2);
+        addPiece(new ChessPosition(2,3),bP3);
+        addPiece(new ChessPosition(2,4),bP4);
+        addPiece(new ChessPosition(2,5),bP5);
+        addPiece(new ChessPosition(2,6),bP6);
+        addPiece(new ChessPosition(2,7),bP7);
+        addPiece(new ChessPosition(2,8),bP8);
     }
 
     @Override
