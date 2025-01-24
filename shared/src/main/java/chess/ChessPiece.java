@@ -79,13 +79,30 @@ public class ChessPiece {
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
         ChessPiece.PieceType myType = this.getPieceType();
-        if (myType == PieceType.KING) {}
-        else if (myType == PieceType.QUEEN) {}
-        else if (myType == PieceType.BISHOP) {}
-        else if (myType == PieceType.KNIGHT) {}
-        else if (myType == PieceType.ROOK) {}
-        else if (myType == PieceType.PAWN) {}
-        else throw new IllegalArgumentException("ChessPiece class - pieceMoves method - piece type is not valid");
 
-    }
+        // Handle each piece type
+        if (myType == PieceType.KING) {
+            // Implement KING moves here
+            return PieceMovesCalculator.KingMovesCalculator(board, myPosition);
+        } else if (myType == PieceType.QUEEN) {
+            // Implement QUEEN moves here
+            return PieceMovesCalculator.QueenMovesCalculator(board, myPosition);
+        } else if (myType == PieceType.BISHOP) {
+            // Use the BishopMovesCalculator
+            return PieceMovesCalculator.BishopMovesCalculator(board, myPosition);
+        } else if (myType == PieceType.KNIGHT) {
+            // Implement KNIGHT moves here
+            return PieceMovesCalculator.KnightMovesCalculator(board, myPosition);
+        } else if (myType == PieceType.ROOK) {
+            // Implement ROOK moves here
+            return PieceMovesCalculator.RookMovesCalculator(board, myPosition);
+        } else if (myType == PieceType.PAWN) {
+            // Implement PAWN moves here
+            return PieceMovesCalculator.PawnMovesCalculator(board, myPosition);
+        } else {
+            // If somehow an invalid type is encountered, throw an exception
+            throw new IllegalArgumentException("Invalid piece type: " + myType);
+        }
+
+    };
 }
