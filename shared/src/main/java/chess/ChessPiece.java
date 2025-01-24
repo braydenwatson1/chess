@@ -78,31 +78,32 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-        ChessPiece.PieceType myType = this.getPieceType();
+        PieceMovesCalculator movesCalculator;
 
-        // Handle each piece type
-        if (myType == PieceType.KING) {
-            // Implement KING moves here
-            return PieceMovesCalculator.KingMovesCalculator(board, myPosition);
-        } else if (myType == PieceType.QUEEN) {
-            // Implement QUEEN moves here
-            return PieceMovesCalculator.QueenMovesCalculator(board, myPosition);
-        } else if (myType == PieceType.BISHOP) {
-            // Use the BishopMovesCalculator
-            return PieceMovesCalculator.BishopMovesCalculator(board, myPosition);
-        } else if (myType == PieceType.KNIGHT) {
-            // Implement KNIGHT moves here
-            return PieceMovesCalculator.KnightMovesCalculator(board, myPosition);
-        } else if (myType == PieceType.ROOK) {
-            // Implement ROOK moves here
-            return PieceMovesCalculator.RookMovesCalculator(board, myPosition);
-        } else if (myType == PieceType.PAWN) {
-            // Implement PAWN moves here
-            return PieceMovesCalculator.PawnMovesCalculator(board, myPosition);
-        } else {
-            // If somehow an invalid type is encountered, throw an exception
-            throw new IllegalArgumentException("Invalid piece type: " + myType);
+        switch (this.getPieceType()) {
+            case KING:
+                movesCalculator = new KingMovesCalculator();
+                break;
+            case QUEEN:
+                movesCalculator = new QueenMovesCalculator();
+                break;
+            case BISHOP:
+                movesCalculator = new BishopMovesCalculator();
+                break;
+            case KNIGHT:
+                movesCalculator = new KnightMovesCalculator();
+                break;
+            case ROOK:
+                movesCalculator = new RookMovesCalculator();
+                break;
+            case PAWN:
+                movesCalculator = new PawnMovesCalculator();
+                break;
+            default:
+                throw new IllegalArgumentException("Invalid piece type: " + this.getPieceType());
         }
 
-    };
+        return movesCalculator.PieceMoves(board, myPosition);
+    }
+
 }

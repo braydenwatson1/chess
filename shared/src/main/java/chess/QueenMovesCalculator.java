@@ -18,7 +18,9 @@ public class QueenMovesCalculator implements PieceMovesCalculator {
             if (tryPos.getColumn() > 8 | tryPos.getRow() > 8 | tryPos.getColumn() < 1 | tryPos.getRow() < 1) {
                 laneOpen = false;
             }
-            if (!laneOpen) { break; }
+            if (!laneOpen) {
+                break;
+            }
             if (myBoard.getPiece(tryPos) == null) {
                 //square is open
                 myCollection.add(new ChessMove(myPos, tryPos, null));
@@ -31,7 +33,7 @@ public class QueenMovesCalculator implements PieceMovesCalculator {
                 //friendly piece is in way
                 laneOpen = false;
             }
-        };
+        }
         //RIGHT
         laneOpen = true;
         for (int i = 1; i < 9; i++) {
@@ -39,7 +41,9 @@ public class QueenMovesCalculator implements PieceMovesCalculator {
             if (tryPos.getColumn() > 8 | tryPos.getRow() > 8 | tryPos.getColumn() < 1 | tryPos.getRow() < 1) {
                 laneOpen = false;
             }
-            if (!laneOpen) { break; }
+            if (!laneOpen) {
+                break;
+            }
             if (myBoard.getPiece(tryPos) == null) {
                 //square is open
                 myCollection.add(new ChessMove(myPos, tryPos, null));
@@ -52,7 +56,7 @@ public class QueenMovesCalculator implements PieceMovesCalculator {
                 //friendly piece is in way
                 laneOpen = false;
             }
-        };
+        }
         //DOWN
         laneOpen = true;
         for (int i = 1; i < 9; i++) {
@@ -60,7 +64,9 @@ public class QueenMovesCalculator implements PieceMovesCalculator {
             if (tryPos.getColumn() > 8 | tryPos.getRow() > 8 | tryPos.getColumn() < 1 | tryPos.getRow() < 1) {
                 laneOpen = false;
             }
-            if (!laneOpen) { break; }
+            if (!laneOpen) {
+                break;
+            }
             if (myBoard.getPiece(tryPos) == null) {
                 //square is open
                 myCollection.add(new ChessMove(myPos, tryPos, null));
@@ -73,7 +79,7 @@ public class QueenMovesCalculator implements PieceMovesCalculator {
                 //friendly piece is in way
                 laneOpen = false;
             }
-        };
+        }
         //LEFT
         laneOpen = true;
         for (int i = 1; i < 9; i++) {
@@ -81,7 +87,9 @@ public class QueenMovesCalculator implements PieceMovesCalculator {
             if (tryPos.getColumn() > 8 | tryPos.getRow() > 8 | tryPos.getColumn() < 1 | tryPos.getRow() < 1) {
                 laneOpen = false;
             }
-            if (!laneOpen) { break; }
+            if (!laneOpen) {
+                break;
+            }
             if (myBoard.getPiece(tryPos) == null) {
                 //square is open
                 myCollection.add(new ChessMove(myPos, tryPos, null));
@@ -94,8 +102,7 @@ public class QueenMovesCalculator implements PieceMovesCalculator {
                 //friendly piece is in way
                 laneOpen = false;
             }
-        };
-
+        }
         //4 BISHOP DIRECTIONS
         laneOpen = true;
         //UPRIGHT
@@ -104,7 +111,9 @@ public class QueenMovesCalculator implements PieceMovesCalculator {
             if (tryPos.getColumn() > 8 | tryPos.getRow() > 8 | tryPos.getColumn() < 1 | tryPos.getRow() < 1) {
                 laneOpen = false;
             }
-            if (!laneOpen) { break; }
+            if (!laneOpen) {
+                break;
+            }
             if (myBoard.getPiece(tryPos) == null) {
                 //square is open
                 myCollection.add(new ChessMove(myPos, tryPos, null));
@@ -117,7 +126,7 @@ public class QueenMovesCalculator implements PieceMovesCalculator {
                 //friendly piece is in way
                 laneOpen = false;
             }
-        };
+        }
         //DOWNRIGHT
         laneOpen = true;
         for (int i = 1; i < 9; i++) {
@@ -125,7 +134,9 @@ public class QueenMovesCalculator implements PieceMovesCalculator {
             if (tryPos.getColumn() > 8 | tryPos.getRow() > 8 | tryPos.getColumn() < 1 | tryPos.getRow() < 1) {
                 laneOpen = false;
             }
-            if (!laneOpen) { break; }
+            if (!laneOpen) {
+                break;
+            }
             if (myBoard.getPiece(tryPos) == null) {
                 //square is open
                 myCollection.add(new ChessMove(myPos, tryPos, null));
@@ -138,7 +149,7 @@ public class QueenMovesCalculator implements PieceMovesCalculator {
                 //friendly piece is in way
                 laneOpen = false;
             }
-        };
+        }
         //DOWNLEFT
         laneOpen = true;
         for (int i = 1; i < 9; i++) {
@@ -146,7 +157,9 @@ public class QueenMovesCalculator implements PieceMovesCalculator {
             if (tryPos.getColumn() > 8 | tryPos.getRow() > 8 | tryPos.getColumn() < 1 | tryPos.getRow() < 1) {
                 laneOpen = false;
             }
-            if (!laneOpen) { break; }
+            if (!laneOpen) {
+                break;
+            }
             if (myBoard.getPiece(tryPos) == null) {
                 //square is open
                 myCollection.add(new ChessMove(myPos, tryPos, null));
@@ -159,7 +172,7 @@ public class QueenMovesCalculator implements PieceMovesCalculator {
                 //friendly piece is in way
                 laneOpen = false;
             }
-        };
+        }
         //UPLEFT
         laneOpen = true;
         for (int i = 1; i < 9; i++) {
@@ -167,7 +180,9 @@ public class QueenMovesCalculator implements PieceMovesCalculator {
             if (tryPos.getColumn() > 8 | tryPos.getRow() > 8 | tryPos.getColumn() < 1 | tryPos.getRow() < 1) {
                 laneOpen = false;
             }
-            if (!laneOpen) { break; }
+            if (!laneOpen) {
+                break;
+            }
             if (myBoard.getPiece(tryPos) == null) {
                 //square is open
                 myCollection.add(new ChessMove(myPos, tryPos, null));
@@ -180,7 +195,9 @@ public class QueenMovesCalculator implements PieceMovesCalculator {
                 //friendly piece is in way
                 laneOpen = false;
             }
-        };
+        }
 
         return myCollection;
-    };
+    }
+}
+
