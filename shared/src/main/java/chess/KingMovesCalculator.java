@@ -19,10 +19,10 @@ public class KingMovesCalculator implements PieceMovesCalculator {
             }
             if (myBoard.getPiece(tryPos) == null) {
                 //square is open
-                myCollection.add(new ChessMove(myPos, tryPos, null));
+                myCollection.add(new ChessMove(myPos, tryPos, ChessPiece.PieceType.KING));
             } else if (myBoard.getPiece(tryPos).getTeamColor() != myBoard.getPiece(myPos).getTeamColor()) {
                 //enemy piece is in way
-                myCollection.add(new ChessMove(myPos, tryPos, null));
+                myCollection.add(new ChessMove(myPos, tryPos, ChessPiece.PieceType.KING));
             } else if (myBoard.getPiece(tryPos).getTeamColor() == myBoard.getPiece(myPos).getTeamColor()) {
                 //friendly piece is in way
             };
@@ -36,10 +36,10 @@ public class KingMovesCalculator implements PieceMovesCalculator {
             }
             if (myBoard.getPiece(tryPos) == null) {
                 //square is open
-                myCollection.add(new ChessMove(myPos, tryPos, null));
+                myCollection.add(new ChessMove(myPos, tryPos, ChessPiece.PieceType.KING));
             } else if (myBoard.getPiece(tryPos).getTeamColor() != myBoard.getPiece(myPos).getTeamColor()) {
                 //enemy piece is in way
-                myCollection.add(new ChessMove(myPos, tryPos, null));
+                myCollection.add(new ChessMove(myPos, tryPos, ChessPiece.PieceType.KING));
             } else if (myBoard.getPiece(tryPos).getTeamColor() == myBoard.getPiece(myPos).getTeamColor()) {
                 //friendly piece is in way
             };
@@ -53,10 +53,10 @@ public class KingMovesCalculator implements PieceMovesCalculator {
             }
             if (myBoard.getPiece(tryPos) == null) {
                 //square is open
-                myCollection.add(new ChessMove(myPos, tryPos, null));
+                myCollection.add(new ChessMove(myPos, tryPos, ChessPiece.PieceType.KING));
             } else if (myBoard.getPiece(tryPos).getTeamColor() != myBoard.getPiece(myPos).getTeamColor()) {
                 //enemy piece is in way
-                myCollection.add(new ChessMove(myPos, tryPos, null));
+                myCollection.add(new ChessMove(myPos, tryPos, ChessPiece.PieceType.KING));
             } else if (myBoard.getPiece(tryPos).getTeamColor() == myBoard.getPiece(myPos).getTeamColor()) {
                 //friendly piece is in way
             };
@@ -70,10 +70,10 @@ public class KingMovesCalculator implements PieceMovesCalculator {
             }
             if (myBoard.getPiece(tryPos) == null) {
                 //square is open
-                myCollection.add(new ChessMove(myPos, tryPos, null));
+                myCollection.add(new ChessMove(myPos, tryPos, ChessPiece.PieceType.KING));
             } else if (myBoard.getPiece(tryPos).getTeamColor() != myBoard.getPiece(myPos).getTeamColor()) {
                 //enemy piece is in way
-                myCollection.add(new ChessMove(myPos, tryPos, null));
+                myCollection.add(new ChessMove(myPos, tryPos, ChessPiece.PieceType.KING));
             } else if (myBoard.getPiece(tryPos).getTeamColor() == myBoard.getPiece(myPos).getTeamColor()) {
                 //friendly piece is in way
             };
@@ -87,10 +87,10 @@ public class KingMovesCalculator implements PieceMovesCalculator {
             }
             if (myBoard.getPiece(tryPos) == null) {
                 //square is open
-                myCollection.add(new ChessMove(myPos, tryPos, null));
+                myCollection.add(new ChessMove(myPos, tryPos, ChessPiece.PieceType.KING));
             } else if (myBoard.getPiece(tryPos).getTeamColor() != myBoard.getPiece(myPos).getTeamColor()) {
                 //enemy piece is in way
-                myCollection.add(new ChessMove(myPos, tryPos, null));
+                myCollection.add(new ChessMove(myPos, tryPos, ChessPiece.PieceType.KING));
             } else if (myBoard.getPiece(tryPos).getTeamColor() == myBoard.getPiece(myPos).getTeamColor()) {
                 //friendly piece is in way
             };
@@ -104,10 +104,10 @@ public class KingMovesCalculator implements PieceMovesCalculator {
             }
             if (myBoard.getPiece(tryPos) == null) {
                 //square is open
-                myCollection.add(new ChessMove(myPos, tryPos, null));
+                myCollection.add(new ChessMove(myPos, tryPos, ChessPiece.PieceType.KING));
             } else if (myBoard.getPiece(tryPos).getTeamColor() != myBoard.getPiece(myPos).getTeamColor()) {
                 //enemy piece is in way
-                myCollection.add(new ChessMove(myPos, tryPos, null));
+                myCollection.add(new ChessMove(myPos, tryPos, ChessPiece.PieceType.KING));
             } else if (myBoard.getPiece(tryPos).getTeamColor() == myBoard.getPiece(myPos).getTeamColor()) {
                 //friendly piece is in way
             };
@@ -121,10 +121,10 @@ public class KingMovesCalculator implements PieceMovesCalculator {
             }
             if (myBoard.getPiece(tryPos) == null) {
                 //square is open
-                myCollection.add(new ChessMove(myPos, tryPos, null));
+                myCollection.add(new ChessMove(myPos, tryPos, ChessPiece.PieceType.KING));
             } else if (myBoard.getPiece(tryPos).getTeamColor() != myBoard.getPiece(myPos).getTeamColor()) {
                 //enemy piece is in way
-                myCollection.add(new ChessMove(myPos, tryPos, null));
+                myCollection.add(new ChessMove(myPos, tryPos, ChessPiece.PieceType.KING));
             } else if (myBoard.getPiece(tryPos).getTeamColor() == myBoard.getPiece(myPos).getTeamColor()) {
                 //friendly piece is in way
             };
@@ -138,10 +138,10 @@ public class KingMovesCalculator implements PieceMovesCalculator {
             }
             if (myBoard.getPiece(tryPos) == null) {
                 //square is open
-                myCollection.add(new ChessMove(myPos, tryPos, null));
+                myCollection.add(new ChessMove(myPos, tryPos, ChessPiece.PieceType.KING));
             } else if (myBoard.getPiece(tryPos).getTeamColor() != myBoard.getPiece(myPos).getTeamColor()) {
                 //enemy piece is in way
-                myCollection.add(new ChessMove(myPos, tryPos, null));
+                myCollection.add(new ChessMove(myPos, tryPos, ChessPiece.PieceType.KING));
             } else if (myBoard.getPiece(tryPos).getTeamColor() == myBoard.getPiece(myPos).getTeamColor()) {
                 //friendly piece is in way
             };
