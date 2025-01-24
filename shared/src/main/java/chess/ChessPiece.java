@@ -70,10 +70,6 @@ public class ChessPiece {
         return type;
     }
 
-
-
-
-
     /**
      * Calculates all the positions a chess piece can move to
      * Does not take into account moves that are illegal due to leaving the king in
@@ -81,12 +77,15 @@ public class ChessPiece {
      *
      * @return Collection of valid moves
      */
-    private Collection<ChessMove> ableMoves;
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-//        ableMoves = PieceMovesCalculator(board, myPosition);
-//        return ableMoves;
-        throw new RuntimeException("Not implemented");
+        ChessPiece.PieceType myType = this.getPieceType();
+        if (myType == PieceType.KING) {}
+        else if (myType == PieceType.QUEEN) {}
+        else if (myType == PieceType.BISHOP) {}
+        else if (myType == PieceType.KNIGHT) {}
+        else if (myType == PieceType.ROOK) {}
+        else if (myType == PieceType.PAWN) {}
+        else throw new IllegalArgumentException("ChessPiece class - pieceMoves method - piece type is not valid");
 
-
-}
+    }
 }
