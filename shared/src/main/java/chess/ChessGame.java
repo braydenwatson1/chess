@@ -62,7 +62,7 @@ public class ChessGame {
         //get the list of piece moves. this is done in pieceMoves from phase 0
         Collection<ChessMove> possibleMoves = myPiece.pieceMoves(board,startPosition);
         //remove check
-        
+
 
 
 
@@ -87,7 +87,34 @@ public class ChessGame {
      * @return True if the specified team is in check
      */
     public boolean isInCheck(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+        //find the king
+        int kingRow = 0;
+        int kingCol = 0;
+
+        for (int r = 1; r < 9; r++) {
+            for (int c = 1; c < 9; c++) {
+                ChessPosition tryPos = new ChessPosition(r,c);
+                if (board.getPiece(tryPos).getPieceType() == ChessPiece.PieceType.KING && board.getPiece(tryPos).getTeamColor() != teamColor) {
+                    kingRow = r;
+                    kingCol = c;
+                    break;
+                }
+            }
+        }
+
+        ChessPosition kingLocation = new ChessPosition(kingRow, kingCol);
+
+        //is he in check?
+        for (int r = 1; r < 9; r++) {
+            for (int c = 1; c < 9; c++) {
+                //if the piece at r,c is NOT our team color (then go on to check if we are in check)
+                if (board.getPiece(new ChessPosition(r,c)).getTeamColor() != teamColor) {
+                    
+                }
+            }
+        }
+
+
     }
 
     /**
