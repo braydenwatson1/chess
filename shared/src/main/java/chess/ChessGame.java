@@ -138,11 +138,27 @@ public class ChessGame {
     /**
      * Makes a move in a chess game
      *
+     *
      * @param move chess move to preform
      * @throws InvalidMoveException if move is invalid
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
+        ChessMove tryMove = move;
+    //is it your turn?
+        ChessPosition sPos = tryMove.getStartPosition();
+        TeamColor yourTurn = getTeamTurn();
+        if (board.getPiece(sPos).getTeamColor() != yourTurn) {
+            throw new InvalidMoveException("not your turn");
+        }
+    //is the move valid?
+        Collection<ChessMove> valMoves = validMoves(sPos);
+        if (valMoves.contains(move)) {
+            //make the move
+            ChessPiece tempSPiece = board.getPiece(move.getStartPosition());
 
+            board.addPiece(move.getStartPosition(), null);
+            board.addPiece(move.getEndPosition(), tempSPiece);
+        }
     }
 
     /**
