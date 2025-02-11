@@ -58,10 +58,6 @@ public class ChessGame {
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
         //get piece in the position
         ChessPiece myPiece = board.getPiece(startPosition);
-            //if its null in the position, there are no valid moves
-            if (myPiece == null) {
-                return null;
-            }
         //get the list of piece moves. this is done in pieceMoves from phase 0
         Collection<ChessMove> possibleMoves = myPiece.pieceMoves(board,startPosition);
         HashSet<ChessMove> VALIDMoves = new HashSet<>();
@@ -245,7 +241,29 @@ public class ChessGame {
      * @return True if the specified team is in stalemate, otherwise false
      */
     public boolean isInStalemate(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+        if(isInCheck(teamColor)) {
+            return false;
+        }
+        else {
+            //scan the board, if we can't move anywhere, then we are in stalemate
+            for (int c = 1; c < 9; c++) {
+                for (int r = 1; r < 9; r++) {
+                    ChessPosition tryPos = new ChessPosition(r, c);
+                    ChessPiece tryPiece = board.getPiece(tryPos);
+                    if (tryPiece == null) {
+                        continue;
+                    }
+                    //if the piece at r,c is our team color
+                    if (tryPiece.getTeamColor() == teamColor) {
+                        Collection<ChessMove> myMoves = validMoves(tryPos);
+                        if (!myMoves.isEmpty()) {
+                            return false;
+                        }
+                    }
+                }
+            }
+            return true;
+        }
     }
 
     /**
