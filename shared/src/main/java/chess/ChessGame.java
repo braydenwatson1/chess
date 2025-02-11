@@ -91,8 +91,8 @@ public class ChessGame {
         int kingRow = 0;
         int kingCol = 0;
 
-        for (int r = 1; r < 9; r++) {
-            for (int c = 1; c < 9; c++) {
+        for (int c = 1; c < 9; c++) {
+            for (int r = 1; r < 9; r++) {
                 ChessPosition tryPos = new ChessPosition(r,c);
                 if (board.getPiece(tryPos).getPieceType() == ChessPiece.PieceType.KING && board.getPiece(tryPos).getTeamColor() != teamColor) {
                     kingRow = r;
@@ -105,16 +105,23 @@ public class ChessGame {
         ChessPosition kingLocation = new ChessPosition(kingRow, kingCol);
 
         //is he in check?
-        for (int r = 1; r < 9; r++) {
-            for (int c = 1; c < 9; c++) {
+        for (int c = 1; c < 9; c++) {
+            for (int r = 1; r < 9; r++) {
+                ChessPosition tryPos = new ChessPosition(r,c);
+                ChessPiece tryPiece = board.getPiece(tryPos);
                 //if the piece at r,c is NOT our team color (then go on to check if we are in check)
-                if (board.getPiece(new ChessPosition(r,c)).getTeamColor() != teamColor) {
-                    
+                if (tryPiece.getTeamColor() != teamColor) {
+                    for ( ChessMove possibleMove : tryPiece.pieceMoves(board, tryPos )) {
+                        if (possibleMove.getEndPosition() == kingLocation) {
+                            //king IS IN CHECK
+                            return true;
+                        }
+                    }
                 }
             }
         }
-
-
+    
+        return false;
     }
 
     /**
