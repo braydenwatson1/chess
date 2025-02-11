@@ -14,14 +14,16 @@ public class ChessGame {
 
     private TeamColor teamTurn;
     private ChessBoard board;
-    private boolean inPlay;
+    private boolean stillPlaying;
+    private TeamColor winner;
 
     public ChessGame() {
     board = new ChessBoard();
     board.resetBoard();
 
     teamTurn = TeamColor.WHITE;
-    inPlay = true;
+    stillPlaying = true;
+    winner = null;
     }
 
     /**
@@ -144,7 +146,7 @@ public class ChessGame {
      * @throws InvalidMoveException if move is invalid
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
-        throw new RuntimeException("Not implemented");
+
     }
 
     /**
@@ -198,7 +200,41 @@ public class ChessGame {
      * @return True if the specified team is in checkmate
      */
     public boolean isInCheckmate(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+        if (!isInCheck(teamColor)) {
+            //stalemate or not, it ain't checkmate if your not in check...
+            return false;
+        }
+        else{
+            for (int c = 1; c < 9; c++) {
+                for (int r = 1; r < 9; r++) {
+                    ChessPosition tryPos = new ChessPosition(r, c);
+                    ChessPiece tryPiece = board.getPiece(tryPos);
+                    if (tryPiece == null) {
+                        continue;
+                    }
+                    //if the piece at r,c is our team color (then we see if we can get ourselves out of check my moving it)
+                    if (tryPiece.getTeamColor() == teamColor) {
+                        for (ChessMove tryThisMove : tryPiece.pieceMoves(board, tryPos)) {
+                            //try to make the move
+                            ChessPiece tempSPiece = board.getPiece(tryThisMove.getStartPosition());
+                            ChessPiece tempEPiece = board.getPiece(tryThisMove.getEndPosition());
+
+                            board.addPiece(tryThisMove.getStartPosition(), null);
+                            board.addPiece(tryThisMove.getEndPosition(), tempSPiece);
+
+                            if (!isInCheck(teamColor)) {
+                                //we got out of check, so not mate (yet)
+                                //put the pieces back
+                                board.addPiece(tryThisMove.getStartPosition(), tempSPiece);
+                                board.addPiece(tryThisMove.getEndPosition(), tempEPiece);
+                                return false;
+                            }
+                        }
+                    }
+                }
+            }
+            return true;
+        }
     }
 
     /**
