@@ -131,20 +131,32 @@ public class ChessGame {
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
         ChessMove tryMove = move;
-    //is it your turn?
         ChessPosition sPos = tryMove.getStartPosition();
-        TeamColor yourTurn = getTeamTurn();
-//        if (board.getPiece(sPos).getTeamColor() != yourTurn) {
-//            throw new InvalidMoveException("not your turn");
-//        }
-    //is the move valid?
+        ChessPosition ePos = tryMove.getEndPosition();
+        if (board.getPiece(sPos) == null) {
+            throw new InvalidMoveException("no piece to move here");
+        }
+        TeamColor myColor = board.getPiece(sPos).getTeamColor();
+
+        TeamColor whoseTurn = getTeamTurn();
+
+        if (whoseTurn != myColor) {
+            throw new InvalidMoveException("Not your turn");
+        }
+
+        //is the move valid?
         Collection<ChessMove> valMoves = validMoves(sPos);
         if (valMoves.contains(move)) {
             //make the move
             ChessPiece tempSPiece = board.getPiece(move.getStartPosition());
 
             board.addPiece(move.getStartPosition(), null);
-            board.addPiece(move.getEndPosition(), tempSPiece);
+            if (move.getPromotionPiece() == null) {
+                board.addPiece(move.getEndPosition(), tempSPiece);
+            }
+            else {
+                board.addPiece(move.getEndPosition(), new ChessPiece(myColor,move.getPromotionPiece()));
+            }
 
             //switch team turn
             if (getTeamTurn() == TeamColor.WHITE) {
@@ -153,6 +165,9 @@ public class ChessGame {
             else {
                 setTeamTurn(TeamColor.WHITE);
             }
+        }
+        else {
+            throw new InvalidMoveException("Not a valid move");
         }
     }
 
