@@ -134,7 +134,7 @@ public class ChessGame {
 //        }
 
         //return the result
-        return possibleMoves;
+        return VALIDMoves;
     }
 
     /**
