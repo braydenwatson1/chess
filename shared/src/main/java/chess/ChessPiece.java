@@ -1,6 +1,7 @@
 package chess;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Objects;
 
 /**
@@ -96,6 +97,8 @@ public class ChessPiece {
         PieceMovesCalculator movesCalculator;
 
         switch (this.getPieceType()) {
+            case null:
+                return new HashSet<>();
             case KING:
                 movesCalculator = new KingMovesCalculator();
                 break;

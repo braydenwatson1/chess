@@ -9,6 +9,7 @@ public class KnightMovesCalculator implements PieceMovesCalculator {
         Collection<ChessMove> myCollection = new HashSet<>();
         ChessPosition myPos = position;
         ChessBoard myBoard = board;
+        if (board.getPiece(myPos) == null) {return new HashSet<>();}
 
         //8 directions
         //UPRIGHT

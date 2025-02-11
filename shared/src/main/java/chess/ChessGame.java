@@ -57,8 +57,7 @@ public class ChessGame {
         ChessPiece myPiece = board.getPiece(startPosition);
         //get the list of piece moves. this is done in pieceMoves from phase 0
         if (myPiece == null) {
-            HashSet<ChessMove> emptyC = new HashSet<>();
-            return emptyC;
+            return new HashSet<>();
         }
         Collection<ChessMove> possibleMoves = myPiece.pieceMoves(board,startPosition);
         HashSet<ChessMove> VALIDMoves = new HashSet<>();
@@ -72,6 +71,9 @@ public class ChessGame {
                 return emptyC2;
             }
             //assuming its NOT checkmate...
+                if (myPiece == null) {
+                    return new HashSet<>();
+                }
                 for ( ChessMove tryThisMove : myPiece.pieceMoves(board, startPosition )) {
                     //try to make the move
                     ChessPiece tempSPiece = board.getPiece(tryThisMove.getStartPosition());
@@ -236,6 +238,8 @@ public class ChessGame {
                                 board.addPiece(tryThisMove.getEndPosition(), tempEPiece);
                                 return false;
                             }
+                            board.addPiece(tryThisMove.getStartPosition(), tempSPiece);
+                            board.addPiece(tryThisMove.getEndPosition(), tempEPiece);
                         }
                     }
                 }
