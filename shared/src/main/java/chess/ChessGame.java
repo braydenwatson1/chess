@@ -2,6 +2,7 @@ package chess;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 
 /**
  * For a class that can manage a chess game, making moves on a board
@@ -61,10 +62,76 @@ public class ChessGame {
             }
         //get the list of piece moves. this is done in pieceMoves from phase 0
         Collection<ChessMove> possibleMoves = myPiece.pieceMoves(board,startPosition);
-        //remove check
+        HashSet<ChessMove> VALIDMoves = new HashSet<>();
+
+        //first see, am i already in check?
+        TeamColor myColor = myPiece.getTeamColor();
+        if (isInCheck(myColor)) {
+            //assuming its NOT CHECKMATE, we need to test all our moves to check to
+            //see WHERE we can move our king OUT of check
+                //(checkmate will be checked for in other places, if we made it here, we assume no checkmate)
+            for (int c = 1; c < 9; c++) {
+                for (int r = 1; r < 9; r++) {
+                    ChessPosition tryPos = new ChessPosition(r,c);
+                    ChessPiece tryPiece = board.getPiece(tryPos);
+                    if (tryPiece == null) { continue; }
+                    //if the piece at r,c is our team color (then we see if we can get ourselves out of check my moving it)
+                    if (tryPiece.getTeamColor() == myPiece.getTeamColor()) {
+                        for ( ChessMove tryThisMove : tryPiece.pieceMoves(board, tryPos )) {
+                            //try to make the move
+                            ChessPiece tempSPiece = board.getPiece(tryThisMove.getStartPosition());
+                            ChessPiece tempEPiece = board.getPiece(tryThisMove.getEndPosition());
+
+                            board.addPiece(tryThisMove.getStartPosition(), null);
+                            board.addPiece(tryThisMove.getEndPosition(), tempSPiece);
+
+                            if (!isInCheck(myColor)) {
+                                //it works, add it to the list of valid moves
+                                VALIDMoves.add(tryThisMove);
+                            }
+
+                            //put the pieces back
+                            board.addPiece(tryThisMove.getStartPosition(), tempSPiece);
+                            board.addPiece(tryThisMove.getEndPosition(), tempEPiece);
+                        }
+                    }
+                }
+            }
 
 
-
+        }
+        //i think this is redundant so i am testing that by commenting it out
+//        else {
+//            //if not immediatley in check, then
+//            //remove the piece and see if you get in check my moving it
+//            for (int c = 1; c < 9; c++) {
+//                for (int r = 1; r < 9; r++) {
+//                    ChessPosition tryPos = new ChessPosition(r,c);
+//                    ChessPiece tryPiece = board.getPiece(tryPos);
+//                    if (tryPiece == null) { continue; }
+//                    //if the piece at r,c is our team color (then we see if we can get ourselves out of check my moving it)
+//                    if (tryPiece.getTeamColor() == myPiece.getTeamColor()) {
+//                        for ( ChessMove tryThisMove : tryPiece.pieceMoves(board, tryPos )) {
+//                            //try to make the move
+//                            ChessPiece tempSPiece = board.getPiece(tryThisMove.getStartPosition());
+//                            ChessPiece tempEPiece = board.getPiece(tryThisMove.getEndPosition());
+//
+//                            board.addPiece(tryThisMove.getStartPosition(), null);
+//                            board.addPiece(tryThisMove.getEndPosition(), tempSPiece);
+//
+//                            if (!isInCheck(myColor)) {
+//                                //it works, add it to the list of valid moves
+//                                VALIDMoves.add(tryThisMove);
+//                            }
+//
+//                            //put the pieces back
+//                            board.addPiece(tryThisMove.getStartPosition(), tempSPiece);
+//                            board.addPiece(tryThisMove.getEndPosition(), tempEPiece);
+//                        }
+//                    }
+//                }
+//            }
+//        }
 
         //return the result
         return possibleMoves;
@@ -120,7 +187,7 @@ public class ChessGame {
                 }
             }
         }
-    
+
         return false;
     }
 
