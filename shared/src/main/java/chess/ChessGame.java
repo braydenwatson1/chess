@@ -15,16 +15,12 @@ public class ChessGame {
 
     private TeamColor teamTurn;
     private ChessBoard board;
-    private boolean stillPlaying;
-    private TeamColor winner;
 
     public ChessGame() {
     board = new ChessBoard();
     board.resetBoard();
 
     teamTurn = TeamColor.WHITE;
-    stillPlaying = true;
-    winner = null;
     }
 
     /**
@@ -189,7 +185,7 @@ public class ChessGame {
             for (int r = 1; r < 9; r++) {
                 ChessPosition tryPos = new ChessPosition(r,c);
                 if (board.getPiece(tryPos) == null) { continue; }
-                if (board.getPiece(tryPos).getPieceType() == ChessPiece.PieceType.KING && board.getPiece(tryPos).getTeamColor() != teamColor) {
+                if (board.getPiece(tryPos).getPieceType() == ChessPiece.PieceType.KING && board.getPiece(tryPos).getTeamColor() == teamColor) {
                     kingRow = r;
                     kingCol = c;
                     break;
@@ -208,7 +204,7 @@ public class ChessGame {
                 //if the piece at r,c is NOT our team color (then go on to check if we are in check)
                 if (tryPiece.getTeamColor() != teamColor) {
                     for ( ChessMove possibleMove : tryPiece.pieceMoves(board, tryPos )) {
-                        if (possibleMove.getEndPosition() == kingLocation) {
+                        if (possibleMove.getEndPosition().equals(kingLocation)) {
                             //king IS IN CHECK
                             return true;
                         }
@@ -321,11 +317,11 @@ public class ChessGame {
             return false;
         }
         ChessGame chessGame = (ChessGame) o;
-        return stillPlaying == chessGame.stillPlaying && teamTurn == chessGame.teamTurn && Objects.equals(board, chessGame.board) && winner == chessGame.winner;
+        return teamTurn == chessGame.teamTurn && Objects.equals(board, chessGame.board);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(teamTurn, board, stillPlaying, winner);
+        return Objects.hash(teamTurn, board);
     }
 }
