@@ -175,6 +175,7 @@ public class ChessGame {
         for (int c = 1; c < 9; c++) {
             for (int r = 1; r < 9; r++) {
                 ChessPosition tryPos = new ChessPosition(r,c);
+                if (board.getPiece(tryPos) == null) { continue; }
                 if (board.getPiece(tryPos).getPieceType() == ChessPiece.PieceType.KING && board.getPiece(tryPos).getTeamColor() != teamColor) {
                     kingRow = r;
                     kingCol = c;
@@ -190,6 +191,7 @@ public class ChessGame {
             for (int r = 1; r < 9; r++) {
                 ChessPosition tryPos = new ChessPosition(r,c);
                 ChessPiece tryPiece = board.getPiece(tryPos);
+                if (board.getPiece(tryPos) == null) { continue; }
                 //if the piece at r,c is NOT our team color (then go on to check if we are in check)
                 if (tryPiece.getTeamColor() != teamColor) {
                     for ( ChessMove possibleMove : tryPiece.pieceMoves(board, tryPos )) {
