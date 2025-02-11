@@ -31,10 +31,10 @@ public class ChessMove {
 
     @Override
     public String toString() {
-        return "ChessMove{" +
-                "startPosition=" + startPosition +
-                ", endPosition=" + endPosition +
-                ", promotionPiece=" + promotionPiece +
+        return "CHESSMOVE{" +
+                "startPos=" + "(" + startPosition.getRow() + "," + startPosition.getColumn() + ")" +
+                ", endPos=" + "(" + endPosition.getRow() + "," + endPosition.getColumn() + ")" +
+                ", promo=" + promotionPiece +
                 '}';
     }
 
