@@ -1,4 +1,4 @@
-package TempDataAccess;
+package dataaccess;
 
 import TempModel.GameData;
 
