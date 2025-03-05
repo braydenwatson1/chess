@@ -1,4 +1,4 @@
-package model;
+package TempModel;
 
 import chess.ChessGame;
 
