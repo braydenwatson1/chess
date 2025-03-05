@@ -1,6 +1,6 @@
-package dataAccess;
+package TempDataAccess;
 
-import model.AuthData;
+import TempModel.AuthData;
 
 import java.util.HashSet;
 import java.util.Objects;

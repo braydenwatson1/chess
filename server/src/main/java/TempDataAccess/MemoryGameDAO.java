@@ -1,7 +1,6 @@
-package dataAccess;
+package TempDataAccess;
 
-import model.AuthData;
-import model.GameData;
+import TempModel.GameData;
 
 import java.util.HashSet;
 import java.util.Objects;

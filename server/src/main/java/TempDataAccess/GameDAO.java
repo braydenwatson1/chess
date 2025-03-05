@@ -1,6 +1,6 @@
-package dataAccess;
+package TempDataAccess;
 
-import model.GameData;
+import TempModel.GameData;
 
 import java.util.HashSet;
 

@@ -1,6 +1,6 @@
-package dataAccess;
+package TempDataAccess;
 
-import model.UserData;
+import TempModel.UserData;
 
 public interface UserDAO {
 
