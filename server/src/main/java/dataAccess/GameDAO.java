@@ -9,5 +9,5 @@ public interface GameDAO {
     void deleteGame(int gameID) throws DataAccessException;
     void listGames() throws DataAccessException;
     void updateGame(GameData game) throws DataAccessException;
-
+    void addGame(GameData game) throws DataAccessException;
 }
