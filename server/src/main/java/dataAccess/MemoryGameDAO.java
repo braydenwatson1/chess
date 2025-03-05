@@ -6,7 +6,7 @@ import model.GameData;
 import java.util.HashSet;
 import java.util.Objects;
 
-public class MemoryAuthDAO implements AuthDAO {
+public class MemoryGameDAO implements GameDAO {
 
     private HashSet<GameData> db = new HashSet<>();
 
@@ -16,32 +16,35 @@ public class MemoryAuthDAO implements AuthDAO {
     }
 
     @Override
-    public void addAuth(AuthData newAuthData) throws DataAccessException {
+    public void addGame(GameData newGameData) throws DataAccessException {
 
-        for (AuthData A : db) {
-            if (Objects.equals(A.authToken(), newAuthData.authToken())) {
-                throw new DataAccessException("Error. AuthToken already exists: " + "--> " + newAuthData.toString() + " <--");
-            }
-        }
-
-        db.add(newAuthData);
-
-    }
-
-    @Override
-    public AuthData getAuth(String myAuthToken) throws DataAccessException {
-        for (AuthData A : db) {
-            if (A.authToken().equals(myAuthToken)) {
-                return A;
-            }
-        }
-        throw new DataAccessException("Auth Token does not exist: " + myAuthToken);
-    }
-
-    @Override
-    public void deleteGame(int myGameID) throws DataAccessException {
         for (GameData G : db) {
-            if (G.gameID().equals(myGameID)) {
+            if (G.gameID() == newGameData.gameID()) {
+                throw new DataAccessException("Error. GameID already exists: " + newGameData.toString());
+            }
+            if (Objects.equals(G.gameName(), newGameData.gameName())) {
+                throw new DataAccessException("Error. GameName already exists: " + newGameData.toString());
+            }
+        }
+
+        db.add(newGameData);
+
+    }
+
+    @Override
+    public GameData getGame(int myGameID) throws DataAccessException {
+        for (GameData G : db) {
+            if (G.gameID()==myGameID) {
+                return G;
+            }
+        }
+        throw new DataAccessException("Game ID does not exist: " + myGameID);
+    }
+
+    @Override
+    public void deleteAuth(int myGameID) throws DataAccessException {
+        for (GameData G : db) {
+            if (G.gameID() == myGameID) {
                 db.remove(G);
                 return;
             }
