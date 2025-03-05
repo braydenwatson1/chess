@@ -51,4 +51,21 @@ public class MemoryGameDAO implements GameDAO {
         }
         throw new DataAccessException("Auth Token does not exist, unable to delete: " + myGameID);
     }
+
+    @Override
+    public HashSet<GameData> listGames() throws DataAccessException {
+        return db;
+    }
+
+    @Override
+    public void updateGame(GameData myGame) throws DataAccessException {
+        for (GameData G : db) {
+            if (G.gameID() == myGame.gameID()) {
+                db.remove(G);
+                db.add(myGame);
+                return;
+            }
+        }
+        throw new DataAccessException("Game does not exist, unable to update: " + myGame.toString());
+    }
 }
