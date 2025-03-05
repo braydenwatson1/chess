@@ -3,6 +3,7 @@ package dataAccess;
 import model.UserData;
 
 import java.util.HashSet;
+import java.util.Objects;
 
 public class MemoryUserDAO implements UserDAO {
 
@@ -14,7 +15,15 @@ public class MemoryUserDAO implements UserDAO {
     }
 
     @Override
-    public void createUser(String username, String password) throws DataAccessException {
+    public void createUser(UserData newUser) throws DataAccessException {
+
+        for (UserData U : db) {
+            if (Objects.equals(U.username(), newUser.username())) {
+                throw new DataAccessException("User already exists: " + newUser.username());
+            }
+        }
+
+        db.add(newUser);
 
     }
 
