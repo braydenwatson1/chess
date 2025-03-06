@@ -72,6 +72,25 @@ public class UserService {
             //return the authToken & username
             return FinalResult;
         }
-        public void logout(LogoutRequest logoutRequest) {}
+        public void logout(LogoutRequest logReq) throws BadRequestException, DataAccessException {
+            //if request is bad, error
+            if (logReq == null || logReq.authToken() == null) {
+                throw new BadRequestException("Error: AuthToken cannot be null. See UserService class: logout() function");
+            }
+
+            //authorize it
+            AuthData auth;
+            try {
+                auth = dbAccess.getAuthDAO().getAuth(logReq.authToken());
+            } catch (DataAccessException e) {
+                throw new DataAccessException("AuthToken not found in Logout function");
+            }
+
+            //delete the authToken
+            //this function deletes the whole authData object, not just the
+            // authtoken string from the object it finds it in
+            dbAccess.getAuthDAO().deleteAuth(auth.authToken());
+
+        }
 }
 
