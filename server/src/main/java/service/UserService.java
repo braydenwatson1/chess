@@ -4,6 +4,7 @@ import TempModel.*;
 import dataaccess.DataAccess;
 import dataaccess.DataAccessException;
 
+import java.util.Objects;
 import java.util.UUID;
 
 public class UserService {
@@ -21,7 +22,7 @@ public class UserService {
             UserData newUser = new UserData(regReq.username(),regReq.password(),regReq.email());
 
             //call createUser function, which inherently checks if
-            // user already exists, and adds it to the db
+            // user already exists, and adds it to the db if it doesn't
             dbAccess.getUserDAO().createUser(newUser);
 
             //create authToken
@@ -38,28 +39,35 @@ public class UserService {
             return FinalResult;
         }
 
-        public LoginResult login(LoginRequest logReq) throws BadRequestException{
+        public LoginResult login(LoginRequest logReq) throws BadRequestException, DataAccessException {
             //if request is bad, error
             if (logReq == null || logReq.username() == null || logReq.password() == null) {
                 throw new BadRequestException("Error: Username, Password cannot be null. See UserService class: register() function");
             }
 
-            //create UserData object to insert into db
-            UserData newUser = new UserData(logReq.username(), logReq.password(), logReq.email());
+            //authorization
+            String userUsername = logReq.username();
+            UserData user;
+            try {
+                user = dbAccess.getUserDAO().getUser(userUsername);
+            } catch (DataAccessException e) {
+                throw new BadRequestException("User not found: " + userUsername);
+            }
 
-            //call createUser function, which inherently checks if
-            // user already exists, and adds it to the db
-            dbAccess.getUserDAO().createUser(newUser);
+            // is password correct?
+            if (!Objects.equals(user.password(), logReq.password())) {
+                throw new BadRequestException("password is incorrect");
+            }
 
             //create authToken
             String authTokenNum = UUID.randomUUID().toString();
-            String associatedUsername = regReq.username();
+            String associatedUsername = logReq.username();
             AuthData newAuthToken = new AuthData(associatedUsername, authTokenNum);
 
             //add authToken to db
             dbAccess.getAuthDAO().addAuth(newAuthToken);
 
-            RegisterResult FinalResult = new RegisterResult(associatedUsername, authTokenNum);
+            LoginResult FinalResult = new LoginResult(associatedUsername, authTokenNum);
 
             //return the authToken & username
             return FinalResult;
