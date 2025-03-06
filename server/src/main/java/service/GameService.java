@@ -72,4 +72,52 @@ public class GameService {
         //return the new game name
         return new CreateGameResult(createGameReq.gameName());
     }
+
+    public void joinGame(JoinRequest joinReq) throws BadRequestException, DataAccessException {
+        //if request is bad, error
+        if (joinReq == null || joinReq.playColor() == null || joinReq.authToken() == null) {
+            throw new BadRequestException("Error: create game request, game name, and authtoken cannot be null");
+        }
+
+        //does authToken exist?
+        AuthData auth;
+        try {
+            auth = dbAccess.getAuthDAO().getAuth(joinReq.authToken());
+        } catch (DataAccessException e) {
+            throw new DataAccessException("AuthToken not found in database.");
+        }
+
+        //does the game exist?
+        GameData game;
+        try {
+            game = dbAccess.getGameDAO().getGame(joinReq.GameID());
+        } catch (DataAccessException e) {
+            throw new DataAccessException("Game not found in database.");
+        }
+
+        //this is who is already in the game:
+        String whitePlayer = game.whiteUsername();
+        String blackPlayer = game.blackUsername();
+
+        //use update game funtion to add user into game as requested color
+        if (joinReq.playColor() == ChessGame.TeamColor.WHITE) {
+            //if the white player is not null, and is not your own username
+            if (whitePlayer != null && !whitePlayer.equals(auth.username())) {
+                throw new BadRequestException("White player already taken in this game");
+            }
+            else {
+                dbAccess.getGameDAO().updateGame(new GameData(joinReq.GameID(), auth.username(), game.blackUsername(), game.gameName(), game.game()));
+            }
+        }
+        if (joinReq.playColor() == ChessGame.TeamColor.BLACK) {
+            //if the black player is not null, and is not your own username
+            if (blackPlayer != null && !blackPlayer.equals(auth.username())) {
+                throw new BadRequestException("Black player already taken in this game");
+            }
+            else {
+                dbAccess.getGameDAO().updateGame(new GameData(joinReq.GameID(), game.whiteUsername(), auth.username(), game.gameName(), game.game()));
+            }
+        }
+
+    }
 }
