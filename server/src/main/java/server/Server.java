@@ -26,7 +26,7 @@ public class Server {
         Spark.put("/game", HANDLERHERE::joinGame);
 
         Spark.exceptions...{FILL IN LATER}
-        
+
         //This line initializes the server and can be removed once you have a functioning endpoint 
         Spark.init();
 
