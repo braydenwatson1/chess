@@ -6,8 +6,7 @@ import dataaccess.DataAccess;
 import dataaccess.DataAccessException;
 
 import java.util.HashSet;
-import java.util.Objects;
-import java.util.UUID;
+
 
 public class GameService {
 
@@ -120,4 +119,11 @@ public class GameService {
         }
 
     }
+
+    public void cleardb() throws DataAccessException {
+        dbAccess.getGameDAO().clear();
+        dbAccess.getUserDAO().clear();
+        dbAccess.getAuthDAO().clear();
+    }
+    
 }
