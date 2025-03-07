@@ -125,5 +125,5 @@ public class GameService {
         dbAccess.getUserDAO().clear();
         dbAccess.getAuthDAO().clear();
     }
-    
+
 }
