@@ -9,7 +9,12 @@ import java.util.UUID;
 
 public class UserService {
 
-        private DataAccess dbAccess;
+    private final DataAccess dbAccess;
+
+    // Constructor
+    public UserService(DataAccess dbAccess) {
+        this.dbAccess = dbAccess;
+    }
 
         public RegisterResult register(RegisterRequest regReq) throws BadRequestException, DataAccessException {
 

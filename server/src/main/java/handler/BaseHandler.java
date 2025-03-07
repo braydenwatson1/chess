@@ -2,7 +2,9 @@ package handler;
 
 import com.google.gson.Gson;
 import dataaccess.DataAccess;
-import service.HandlerErrorException;
+import dataaccess.DataAccessException;
+import handler.HandlerErrorException;
+import service.BadRequestException;
 import spark.Request;
 import spark.Response;
 import spark.Route;
@@ -11,9 +13,9 @@ import java.net.HttpURLConnection;
 
 public class BaseHandler implements Route {
 
-    private final DataAccess dataAccess;
-    public BaseHandler(DataAccess dataAccess) {
-        this.dataAccess = dataAccess;
+    private final DataAccess dbAccess;
+    public BaseHandler(DataAccess dbAccess) {
+        this.dbAccess = dbAccess;
     }
 
     @Override
@@ -27,12 +29,12 @@ public class BaseHandler implements Route {
         return gson.toJson(result);
     }
 
-    protected Object processRequest(Request request, String authToken) throws HandlerErrorException {
+    protected Object processRequest(Request request, String authToken) throws HandlerErrorException, BadRequestException, DataAccessException {
         throw new HandlerErrorException("Subclasses must implement this method.");
     }
 
     protected DataAccess getDataAccess() {
-        return dataAccess;
+        return dbAccess;
     }
 }
 
