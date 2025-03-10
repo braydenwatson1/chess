@@ -19,7 +19,7 @@ public class BaseHandler implements Route {
     }
 
     @Override
-    public Object handle(Request request, Response response) throws HandlerErrorException {
+    public Object handle(Request request, Response response) throws HandlerErrorException, BadRequestException, DataAccessException {
         Gson gson = new Gson();
         String authToken = request.headers("Authorization");
 
