@@ -17,7 +17,7 @@ public class ListGamesHandler extends BaseHandler {
     @Override
     protected ListResult processRequest(Request request, String authToken) throws HandlerErrorException, BadRequestException, DataAccessException {
         // Check if auth token exists before proceeding
-        if (authToken.isEmpty() || authToken == null) {
+        if (authToken == null|| authToken.isEmpty() ) {
             throw new HandlerErrorException("Authorization token required.");
         }
 
