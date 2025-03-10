@@ -10,7 +10,11 @@ import java.util.HashSet;
 
 public class GameService {
 
-    private DataAccess dbAccess;
+    private final DataAccess dbAccess;
+
+    public GameService(DataAccess dbAccess) {
+        this.dbAccess = dbAccess;
+    }
 
     public ListResult listGames(AuthData authObj) throws BadRequestException, DataAccessException {
         //if request is bad, error
@@ -98,7 +102,7 @@ public class GameService {
         String whitePlayer = game.whiteUsername();
         String blackPlayer = game.blackUsername();
 
-        //use update game funtion to add user into game as requested color
+        //use update game function to add user into game as requested color
         if (joinReq.playColor() == ChessGame.TeamColor.WHITE) {
             //if the white player is not null, and is not your own username
             if (whitePlayer != null && !whitePlayer.equals(auth.username())) {
