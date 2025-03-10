@@ -1,5 +1,6 @@
 package TempModel;
 
-import java.util.Collection;
+import chess.ChessGame;
+
 
 public record CreateGameRequest(String gameName, String authToken) {}
