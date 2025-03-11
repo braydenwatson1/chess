@@ -100,6 +100,6 @@ public class UserService {
             // authtoken string from the object it finds it in
             dbAccess.getAuthDAO().deleteAuth(auth.authToken());
         }
-        
+
 }
 
