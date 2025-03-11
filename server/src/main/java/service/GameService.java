@@ -49,36 +49,43 @@ public class GameService {
 
     public CreateGameResult createGame(CreateGameRequest createGameReq) throws BadRequestException, DataAccessException {
         //if request is bad, error
-        if (createGameReq == null || createGameReq.gameName() == null || createGameReq.authToken() == null) {
+        if (createGameReq == null || createGameReq.gameName() == null || createGameReq.authData().authToken() == null) {
             throw new BadRequestException("Error: create game request, game name, and authtoken cannot be null");
         }
 
+        String myGameName = createGameReq.gameName();
+        AuthData myAuthData = createGameReq.authData();
+        String myAuthToken = myAuthData.authToken();
+        String myUsername = myAuthData.username();
+
         //does authToken exist?
-        AuthData auth;
-        try {
-            auth = dbAccess.getAuthDAO().getAuth(createGameReq.authToken());
-        } catch (DataAccessException e) {
-            throw new DataAccessException("AuthToken not found in database.");
+        if (!authExist(myAuthToken)) {
+            throw new BadRequestException("AuthToken does not exist.");
         }
 
+        //does AuthToken match up with your username correctly?
+        if (!authMatchUsername(myUsername, myAuthToken)) {
+            throw new BadRequestException("AuthToken Does Not Match Username");
+        }
 
         //create a new game and add it to the db list
         HashSet<GameData> gamesList = dbAccess.getGameDAO().listGames();
         int oldLength = gamesList.size();
         int gameID = oldLength + 1;
 
-        GameData newGame = new GameData(gameID, null, null, createGameReq.gameName(), new ChessGame());
+        GameData newGame = new GameData(gameID, null, null, myGameName, new ChessGame());
         dbAccess.getGameDAO().addGame(newGame);
 
-        HashSet<GameData> newGamesList = dbAccess.getGameDAO().listGames();
-        int newLength = newGamesList.size();
+        //verify that the list size expanded by 1:
+            HashSet<GameData> newGamesList = dbAccess.getGameDAO().listGames();
+            int newLength = newGamesList.size();
 
-        if (newLength != (oldLength + 1)) {
-            throw new BadRequestException("new game did not get added to the db");
-        }
+            if (newLength != (oldLength + 1)) {
+                throw new BadRequestException("new game did not get added to the db");
+            }
 
         //return the new game name
-        return new CreateGameResult(createGameReq.gameName());
+        return new CreateGameResult(gameID);
     }
 
     public void joinGame(JoinRequest joinReq) throws BadRequestException, DataAccessException {
