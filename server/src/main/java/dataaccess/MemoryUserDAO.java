@@ -40,12 +40,12 @@ public class MemoryUserDAO implements UserDAO {
         for (UserData user : db) {
             if (user.username().equals(username)) {
                 if (!Objects.equals(user.password(), password)) {
-                    throw new DataAccessException("Username and Password do not match")
+                    throw new DataAccessException("Username and Password do not match");
                 }
                 else { return; }
             }
         }
         throw new DataAccessException("User not found: " + username);
     }
-    
+
 }

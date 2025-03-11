@@ -6,6 +6,7 @@ import dataaccess.DataAccess;
 import dataaccess.DataAccessException;
 
 import java.util.HashSet;
+import java.util.Objects;
 
 
 public class GameService {
@@ -16,29 +17,33 @@ public class GameService {
         this.dbAccess = dbAccess;
     }
 
-    public ListResult listGames(AuthData authObj) throws BadRequestException, DataAccessException {
+    public ListResult listGames(ListRequest req) throws BadRequestException, DataAccessException {
         //if request is bad, error
-        if (authObj == null || authObj.authToken() == null || authObj.username() == null) {
-            throw new BadRequestException("list games request cannot be null");
+        if (req == null || req.authData().authToken() == null || req.authData().username() == null) {
+            throw new BadRequestException("listGame request cannot be null");
         }
+
+        AuthData myAuthData = req.authData();
+        String myAuthToken = req.authData().authToken();
+        String myUsername = req.authData().username();
 
         //does authToken exist?
-        AuthData auth;
-        try {
-            auth = dbAccess.getAuthDAO().getAuth(authObj.authToken());
-        } catch (DataAccessException e) {
-            throw new DataAccessException("AuthToken not found in database.");
-        }
+         if (!authExist(myAuthToken)) {
+             throw new BadRequestException("AuthToken does not exist.");
+         }
 
         //does AuthToken match up with your username correctly?
-        String matchingUsername = auth.username();
-        if (!authObj.username().equals(matchingUsername)) {
-            throw new BadRequestException("AuthToken does not match your username.");
+        if (!authMatchUsername(myUsername, myAuthToken)) {
+            throw new BadRequestException("AuthToken Does Not Match Username");
         }
 
-        //get a list of games and put it into a ListResult object
+        //get hashset of games from the db
+        HashSet<GameData> myHashSet = dbAccess.getGameDAO().listGames();
 
-        ListResult finalResult = new ListResult(dbAccess.getGameDAO().listGames());
+        //put them into a List Result object
+        ListResult finalResult = new ListResult(myHashSet);
+
+        //return the list result
         return finalResult;
     }
 
@@ -128,6 +133,26 @@ public class GameService {
         dbAccess.getGameDAO().clear();
         dbAccess.getUserDAO().clear();
         dbAccess.getAuthDAO().clear();
+    }
+
+    //helper functions
+    private boolean authExist(String authToken){
+        try {
+            dbAccess.getAuthDAO().getAuth(authToken);
+        } catch (DataAccessException e) {
+            return false;
+        }
+        return true;
+    }
+
+    private boolean authMatchUsername(String authToken, String username) throws DataAccessException {
+     AuthData authData = dbAccess.getAuthDAO().getAuth(authToken);
+     String correctUsername = authData.username();
+     String correctAuth = authData.authToken();
+     if (Objects.equals(username, correctUsername) && Objects.equals(authToken, correctAuth)) {
+         return true;
+     }
+     return false;
     }
 
 }
