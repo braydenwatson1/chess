@@ -1,6 +1,6 @@
 package service;
 
-import TempModel.*;
+import Model.*;
 import dataaccess.DataAccess;
 import dataaccess.DataAccessException;
 

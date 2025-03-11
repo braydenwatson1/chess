@@ -1,15 +1,13 @@
 package handler;
 
-import TempModel.CreateGameRequest;
-import TempModel.CreateGameResult;
+import Model.CreateGameRequest;
+import Model.CreateGameResult;
 import com.google.gson.Gson;
 import service.GameService;
 import service.BadRequestException;
 import dataaccess.DataAccess;
 import dataaccess.DataAccessException;
-import handler.HandlerErrorException;
 import spark.Request;
-import spark.Response;
 
 public class CreateGameHandler extends BaseHandler {
 

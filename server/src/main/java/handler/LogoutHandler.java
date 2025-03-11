@@ -1,10 +1,9 @@
 package handler;
 
-import TempModel.LogoutRequest;
+import Model.LogoutRequest;
 import dataaccess.DataAccess;
 import dataaccess.DataAccessException;
 import service.UserService;
-import handler.HandlerErrorException;
 import service.BadRequestException;
 import spark.Request;
 

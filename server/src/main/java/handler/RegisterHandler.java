@@ -1,19 +1,18 @@
 package handler;
 
-import TempModel.RegisterRequest;
+import Model.RegisterRequest;
 import dataaccess.DataAccessException;
-import handler.HandlerErrorException;
 import com.google.gson.Gson;
 import dataaccess.DataAccess;
 import service.BadRequestException;
 import service.UserService;
 import spark.Request;
-import TempModel.AuthData;
-import TempModel.UserData;
+import Model.UserData;
 
 public class RegisterHandler extends BaseHandler {
 
     public RegisterHandler(DataAccess dbAccess) {
+
         super(dbAccess);
     }
 

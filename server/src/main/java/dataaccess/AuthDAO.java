@@ -1,6 +1,6 @@
 package dataaccess;
 
-import TempModel.AuthData;
+import Model.AuthData;
 
 public interface AuthDAO {
 

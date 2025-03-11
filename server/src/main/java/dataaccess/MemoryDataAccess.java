@@ -20,6 +20,7 @@ public class MemoryDataAccess implements DataAccess {
     //override methods:
     @Override
     public GameDAO getGameDAO() {
+
         return gameDAO;
     }
 
@@ -31,6 +32,7 @@ public class MemoryDataAccess implements DataAccess {
 
     @Override
     public UserDAO getUserDAO() {
+
         return userDAO;
     }
 

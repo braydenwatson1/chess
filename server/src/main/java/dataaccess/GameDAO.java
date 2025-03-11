@@ -1,6 +1,6 @@
 package dataaccess;
 
-import TempModel.GameData;
+import Model.GameData;
 
 import java.util.HashSet;
 
@@ -8,6 +8,7 @@ public interface GameDAO {
 
     void clear() throws DataAccessException;
     GameData getGame(int gameID) throws DataAccessException;
+    boolean gameExists(int gameID) throws DataAccessException;
     void deleteGame(int gameID) throws DataAccessException;
     HashSet<GameData> listGames() throws DataAccessException;
     void updateGame(GameData game) throws DataAccessException;

@@ -1,3 +1,3 @@
-package TempModel;
+package Model;
 
 public record LogoutRequest(String authToken) {}

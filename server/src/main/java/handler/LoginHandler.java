@@ -4,11 +4,9 @@ import dataaccess.DataAccessException;
 import service.BadRequestException;
 import dataaccess.DataAccess;
 import service.UserService;
-import handler.HandlerErrorException;
 import com.google.gson.Gson;
 import spark.Request;
-import TempModel.LoginRequest;
-import TempModel.LoginResult;
+import Model.LoginRequest;
 
 public class LoginHandler extends BaseHandler {
 

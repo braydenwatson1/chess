@@ -1,4 +1,4 @@
-package TempModel;
+package Model;
 
 import java.util.Collection;
 

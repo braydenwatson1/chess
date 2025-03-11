@@ -1,7 +1,7 @@
 package handler;
 
-import TempModel.AuthData;
-import TempModel.ListResult;
+import Model.AuthData;
+import Model.ListResult;
 import dataaccess.DataAccess;
 import dataaccess.DataAccessException;
 import service.GameService;

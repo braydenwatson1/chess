@@ -1,6 +1,4 @@
-package TempModel;
-
-import chess.ChessGame;
+package Model;
 
 
 public record CreateGameRequest(String gameName, String authToken) {}

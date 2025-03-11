@@ -1,13 +1,13 @@
 package dataaccess;
 
-import TempModel.AuthData;
+import Model.AuthData;
 
 import java.util.HashSet;
 import java.util.Objects;
 
 public class MemoryAuthDAO implements AuthDAO {
 
-    private HashSet<AuthData> db = new HashSet<>();
+    private final HashSet<AuthData> db = new HashSet<>();
 
     @Override
     public void clear() throws DataAccessException {
@@ -16,15 +16,12 @@ public class MemoryAuthDAO implements AuthDAO {
 
     @Override
     public void addAuth(AuthData newAuthData) throws DataAccessException {
-
         for (AuthData A : db) {
             if (Objects.equals(A.authToken(), newAuthData.authToken())) {
                 throw new DataAccessException("Error. AuthToken already exists: " + "--> " + newAuthData.toString() + " <--");
             }
         }
-
         db.add(newAuthData);
-
     }
 
     @Override

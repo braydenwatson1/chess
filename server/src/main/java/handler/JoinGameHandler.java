@@ -2,8 +2,7 @@ package handler;
 
 import dataaccess.DataAccess;
 import dataaccess.DataAccessException;
-import handler.HandlerErrorException;
-import TempModel.JoinRequest;
+import Model.JoinRequest;
 import service.BadRequestException;
 import service.GameService;
 import spark.Request;

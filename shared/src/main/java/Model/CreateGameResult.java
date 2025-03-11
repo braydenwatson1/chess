@@ -1,5 +1,3 @@
-package TempModel;
-
-import java.util.Collection;
+package Model;
 
 public record CreateGameResult(String gameName) {}

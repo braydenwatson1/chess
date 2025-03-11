@@ -1,13 +1,13 @@
 package dataaccess;
 
-import TempModel.GameData;
+import Model.GameData;
 
 import java.util.HashSet;
 import java.util.Objects;
 
 public class MemoryGameDAO implements GameDAO {
 
-    private HashSet<GameData> db = new HashSet<>();
+    private final HashSet<GameData> db = new HashSet<>();
 
     @Override
     public void clear() throws DataAccessException {
@@ -16,7 +16,6 @@ public class MemoryGameDAO implements GameDAO {
 
     @Override
     public void addGame(GameData newGameData) throws DataAccessException {
-
         for (GameData G : db) {
             if (G.gameID() == newGameData.gameID()) {
                 throw new DataAccessException("Error. GameID already exists: " + newGameData.toString());
@@ -25,9 +24,7 @@ public class MemoryGameDAO implements GameDAO {
                 throw new DataAccessException("Error. GameName already exists: " + newGameData.toString());
             }
         }
-
         db.add(newGameData);
-
     }
 
     @Override
@@ -48,11 +45,11 @@ public class MemoryGameDAO implements GameDAO {
                 return;
             }
         }
-        throw new DataAccessException("Auth Token does not exist, unable to delete: " + myGameID);
+        throw new DataAccessException("Game ID does not exist, unable to delete: " + myGameID);
     }
 
     @Override
-    public HashSet<GameData> listGames() throws DataAccessException {
+    public HashSet<GameData> listGames() {
         return db;
     }
 
@@ -65,6 +62,16 @@ public class MemoryGameDAO implements GameDAO {
                 return;
             }
         }
-        throw new DataAccessException("Game does not exist, unable to update: " + myGame.toString());
+        throw new DataAccessException("Error in GameDAO::UpdateGame, unable to update: " + myGame.toString());
+    }
+
+    @Override
+    public boolean gameExists(int gameID) throws DataAccessException {
+        for (GameData G : db) {
+            if (G.gameID() == gameID) {
+                return true;
+            }
+        }
+        return false;
     }
 }
