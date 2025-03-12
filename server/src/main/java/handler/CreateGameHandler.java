@@ -22,8 +22,19 @@ public class CreateGameHandler implements Route {
     @Override
     public Object handle(Request req, Response res) {
         try {
-            // Convert JSON body into a CreateGameRequest object
+            // Extract authToken from the Authorization header
+            String authToken = req.headers("Authorization");
+
+            if (authToken == null || authToken.isEmpty()) {
+                res.status(400); // Bad Request
+                return gson.toJson(new ErrorResponse("Authorization token is missing"));
+            }
+
+            // Convert JSON body into a CreateGameRequest object (contains gameName)
             CreateGameRequest createGameRequest = gson.fromJson(req.body(), CreateGameRequest.class);
+
+            // Now set the authToken to the CreateGameRequest object
+            createGameRequest = new CreateGameRequest(createGameRequest.gameName(), authToken);
 
             // Call createGame function in GameService
             CreateGameResult result = gameService.createGame(createGameRequest);
@@ -41,4 +52,3 @@ public class CreateGameHandler implements Route {
         }
     }
 }
-

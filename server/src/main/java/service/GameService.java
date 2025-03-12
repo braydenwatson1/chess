@@ -49,8 +49,8 @@ public class GameService {
 
     public CreateGameResult createGame(CreateGameRequest createGameReq) throws BadRequestException, DataAccessException {
         //if request is bad, error
-        if (createGameReq == null || createGameReq.gameName() == null || createGameReq.authToken() == null) {
-            throw new BadRequestException("Error: create game request, game name, and authtoken cannot be null");
+        if (createGameReq.gameName() == null || createGameReq.authToken() == null) {
+            throw new BadRequestException("Error: create game request, game name, and authtoken cannot be null: " + createGameReq.toString());
         }
 
         String myGameName = createGameReq.gameName();
