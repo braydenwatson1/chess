@@ -16,7 +16,7 @@ public class UserService {
         this.dbAccess = dbAccess;
     }
 
-        public RegisterResult register(RegisterRequest regReq) throws BadRequestException, DataAccessException {
+        public RegisterResult register(RegisterRequest regReq) throws BadRequestException, DataAccessException, ForbiddenException {
             //if request is bad, error
             if (regReq == null || regReq.username() == null || regReq.password() == null || regReq.email() == null) {
                 throw new BadRequestException("Error: Username, Password, and email cannot be null. See UserService class: register() function");
@@ -25,6 +25,10 @@ public class UserService {
             String myUsername = regReq.username();
             String myPassword = regReq.password();
             String myEmail = regReq.email();
+
+            if (dbAccess.getUserDAO().userExists(myUsername)) {
+                throw new ForbiddenException("User already exists error in registration");
+            }
 
             //create UserData object to insert into db
             UserData newUser = new UserData(myUsername, myPassword, myEmail);
@@ -57,8 +61,10 @@ public class UserService {
 
             //authorization
             UserData user;
+
             try {
                 user = dbAccess.getUserDAO().getUser(myUsername);
+
             } catch (DataAccessException e) {
                 throw new BadRequestException("User not found: " + myUsername);
             }
@@ -87,13 +93,12 @@ public class UserService {
             }
 
             //does the authToken exist?
-            AuthData auth;
             try {
-                auth = dbAccess.getAuthDAO().getAuth(logReq.authToken());
+                AuthData trythis = dbAccess.getAuthDAO().getAuth(logReq.authToken());
             } catch (DataAccessException e) {
-                throw new DataAccessException("AuthToken not found in database");
+                throw new DataAccessException(e.getMessage());
             }
-
+            AuthData auth = dbAccess.getAuthDAO().getAuth(logReq.authToken());
 
             //delete the authToken
             //this function deletes the whole authData object, not just the

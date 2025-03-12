@@ -47,7 +47,7 @@ public class CreateGameHandler implements Route {
             res.status(400); // Bad Request
             return gson.toJson(new ErrorResponse(e.getMessage()));
         } catch (DataAccessException e) {
-            res.status(500); // Internal Server Error
+            res.status(401); // Internal Server Error
             return gson.toJson(new ErrorResponse(e.getMessage()));
         }
     }

@@ -2,6 +2,7 @@ package handler;
 
 import Model.JoinRequest;
 import service.BadRequestException;
+import service.ForbiddenException;
 import service.GameService;
 import Model.ErrorResponse;
 import spark.Request;
@@ -29,12 +30,10 @@ public class JoinGameHandler implements Route {
                 return gson.toJson(new ErrorResponse("Authorization token is missing"));
             }
 
-            // Convert JSON body into a JoinRequest object
             JoinRequest joinRequest = gson.fromJson(req.body(), JoinRequest.class);
 
-            // Use the extracted authToken from the header and pass it into the JoinRequest
-            JoinRequest newReq = new JoinRequest(joinRequest.GameID(), joinRequest.playColor(), authToken);
-
+// Use the extracted authToken from the header and pass it into the JoinRequest
+            JoinRequest newReq = new JoinRequest(joinRequest.gameID(), joinRequest.playerColor(), authToken);
             // Call joinGame function in GameService
             gameService.joinGame(newReq);
 
@@ -46,12 +45,15 @@ public class JoinGameHandler implements Route {
             res.status(400); // Bad Request
             return gson.toJson(new ErrorResponse(e.getMessage()));
         } catch (DataAccessException e) {
-            res.status(500); // Internal Server Error
+            res.status(401); // Internal Server Error
             return gson.toJson(new ErrorResponse(e.getMessage()));
         } catch (NumberFormatException e) {
             // Handle case where the gameID is not a valid integer
             res.status(400); // Bad Request
             return gson.toJson(new ErrorResponse("Invalid game ID format"));
+        } catch (ForbiddenException e) {
+            res.status(403); // Bad Request
+            return gson.toJson(new ErrorResponse("Error: Forbidden 403"));
         }
     }
 

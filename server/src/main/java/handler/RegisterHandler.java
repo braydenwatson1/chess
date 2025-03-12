@@ -4,6 +4,7 @@ import Model.ErrorResponse;
 import Model.RegisterRequest;
 import Model.RegisterResult;
 import service.BadRequestException;
+import service.ForbiddenException;
 import service.UserService;
 import spark.Request;
 import spark.Response;
@@ -37,6 +38,9 @@ public class RegisterHandler implements Route {
             return gson.toJson(new ErrorResponse(e.getMessage()));
         } catch (DataAccessException e) {
             res.status(500); // Internal Server Error
+            return gson.toJson(new ErrorResponse(e.getMessage()));
+        } catch (ForbiddenException e) {
+            res.status(403); // Forbidden
             return gson.toJson(new ErrorResponse(e.getMessage()));
         }
     }

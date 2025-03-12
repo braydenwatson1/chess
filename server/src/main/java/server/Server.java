@@ -31,10 +31,10 @@ public class Server {
         Spark.delete("/db", new ClearHandler(clearService));
 
 
-        Spark.exception(Exception.class, (exception, request, response) -> {
-            response.status(500);
-            response.body("An internal error occurred: " + exception.getMessage());
-        });
+        Spark.exception(BadRequestException.class, this::badRequestExceptionHandler);
+        Spark.exception(DataAccessException.class, this::DataAccessExceptionHandler);
+        Spark.exception(ForbiddenException.class, this::ForbiddenExceptionHandler);
+        Spark.exception(Exception.class, this::otherExceptionHandler);
 
         //This line initializes the server and can be removed once you have a functioning endpoint
         Spark.init();
@@ -47,4 +47,32 @@ public class Server {
         Spark.stop();
         Spark.awaitStop();
     }
+
+
+    //helper functions for error handling
+    private void otherExceptionHandler(Exception e, Request req, Response res) {
+        res.status(500);
+        res.body("Error here: 500: " + e.getMessage());
+
+    }
+
+    private void badRequestExceptionHandler(BadRequestException e, Request req, Response res) {
+        res.status(400);
+        res.body("Error: 400 bad request");
+
+    }
+
+    private void DataAccessExceptionHandler(DataAccessException e, Request req, Response res) {
+        res.status(401);
+        res.body("Error: 401 unauthorized");
+
+    }
+
+    private void ForbiddenExceptionHandler(ForbiddenException e, Request req, Response res) {
+        res.status(403);
+        res.body("Error: 403 forbidden");
+
+    }
+
+
 }

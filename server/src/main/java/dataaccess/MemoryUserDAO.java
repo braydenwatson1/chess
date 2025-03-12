@@ -32,7 +32,7 @@ public class MemoryUserDAO implements UserDAO {
                 return user;
             }
         }
-        throw new DataAccessException("User not found: " + username);
+        throw new DataAccessException("dbAccess error: User not found: " + username);
     }
 
     @Override
@@ -46,6 +46,16 @@ public class MemoryUserDAO implements UserDAO {
             }
         }
         throw new DataAccessException("User not found: " + username);
+    }
+
+    @Override
+    public boolean userExists(String username) {
+        for (UserData U : db) {
+            if (Objects.equals(U.username(), username)) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }
