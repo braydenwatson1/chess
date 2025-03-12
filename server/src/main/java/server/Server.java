@@ -16,6 +16,7 @@ public class Server {
         DataAccess dbAccess = new MemoryDataAccess();
         UserService userService = new UserService(dbAccess);
         GameService gameService = new GameService(dbAccess);
+        ClearAllService clearService = new ClearAllService(dbAccess);
 
         Spark.post("/user", new RegisterHandler(dbAccess));
         Spark.path("/session", () -> {
@@ -27,7 +28,7 @@ public class Server {
             Spark.post("", new CreateGameHandler(gameService));
             Spark.put("", new JoinGameHandler(gameService));
         });
-        Spark.delete("/db", new ClearHandler(dbAccess));
+        Spark.delete("/db", new ClearHandler(clearService));
 
 
 
