@@ -28,12 +28,11 @@ public class ListGamesHandler implements Route {
                 return gson.toJson(new ErrorResponse("Authorization token is missing"));
             }
 
-            // Convert JSON body into a CreateGameRequest object (contains gameName)
-            ListRequest ListRequest = gson.fromJson(authToken,  ListRequest.class);
+            // Create the ListRequest object and set the authToken
+            ListRequest listRequest = new ListRequest(authToken);
 
-            // Call createGame function in GameService
-            ListResult result = gameService.listGames(ListRequest);
-
+            // Call listGames function in GameService
+            ListResult result = gameService.listGames(listRequest);
 
             // Set HTTP response code
             res.status(200);

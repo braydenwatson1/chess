@@ -35,11 +35,21 @@ public class GameService {
         //get hashset of games from the db
         HashSet<GameData> myHashSet = dbAccess.getGameDAO().listGames();
 
-        //put them into a List Result object
-        ListResult finalResult = new ListResult(myHashSet);
+        HashSet<GameListData> simplifiedGames = new HashSet<>();
+        for (GameData game : myHashSet) {
+            GameListData simplifiedGame = new GameListData(
+                    game.gameID(),
+                    game.whiteUsername(),
+                    game.blackUsername(),
+                    game.gameName()
+            );
+            simplifiedGames.add(simplifiedGame);
+        }
+            //put them into a List Result object
+            ListResult finalResult = new ListResult(simplifiedGames);
 
-        //return the list result
-        return finalResult;
+            //return the list result
+            return finalResult;
     }
 
     public CreateGameResult createGame(CreateGameRequest createGameReq) throws BadRequestException, DataAccessException {
