@@ -9,5 +9,3 @@ public class Main {
         System.out.println("Server is running on http://localhost:8080");
     }
 }
-
-
