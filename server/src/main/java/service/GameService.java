@@ -87,53 +87,58 @@ public class GameService {
     }
 
     public void joinGame(JoinRequest joinReq) throws BadRequestException, DataAccessException {
-        //if request is bad, error
-        if (joinReq == null || joinReq.playColor() == null || joinReq.authToken() == null) {
-            throw new BadRequestException("Error: create game request, game name, and authtoken cannot be null");
+        // If request is bad, error
+        if (joinReq.playColor() == null || joinReq.authToken() == null) {
+            throw new BadRequestException("Error: create game request, game name, and authToken cannot be null" + joinReq.toString());
         }
 
-        int myGameID = joinReq.GameID();
+        // Parse the gameID from string to int manually, with exception handling
+        int myGameID;
+        try {
+            myGameID = Integer.parseInt(joinReq.GameID());
+        } catch (NumberFormatException e) {
+            throw new BadRequestException("Error: Invalid Game ID format in the joinGame function in service " + joinReq.GameID() + " or tostringed: "+joinReq.GameID().toString());
+        }
+
         ChessGame.TeamColor myPlayColor = joinReq.playColor();
         String myAuthToken = joinReq.authToken();
         AuthData myAuthData = dbAccess.getAuthDAO().getAuth(myAuthToken);
         String myUsername = myAuthData.username();
 
-        //does authToken exist?
+        if (!Objects.equals(myAuthData.authToken(), myAuthToken)) {
+            throw new BadRequestException("Error in the GameService::joinGame function. AuthTokens are supposed to match");
+        }
+
+        // Does authToken exist?
         if (!authExist(myAuthToken)) {
             throw new BadRequestException("AuthToken does not exist.");
         }
 
-        //does AuthToken match up with your username correctly?
-        if (!authMatchUsername(myUsername, myAuthToken)) {
-            throw new BadRequestException("AuthToken Does Not Match Username");
-        }
-
         GameData gameData = dbAccess.getGameDAO().getGame(myGameID);
-        //this is who is already in the game:
+
+        // This is who is already in the game:
         String whitePlayer = gameData.whiteUsername();
         String blackPlayer = gameData.blackUsername();
 
-        //use update game function to add user into game as requested color
+        // Use update game function to add user into the game as requested color
         if (myPlayColor == ChessGame.TeamColor.WHITE) {
-            //if the white player is not null, and is not your own username
+            // If the white player is not null and is not your own username
             if (whitePlayer != null && !whitePlayer.equals(myUsername)) {
                 throw new BadRequestException("White player already taken in this game");
-            }
-            else {
+            } else {
                 dbAccess.getGameDAO().updateGame(new GameData(myGameID, myUsername, gameData.blackUsername(), gameData.gameName(), gameData.game()));
             }
         }
         if (joinReq.playColor() == ChessGame.TeamColor.BLACK) {
-            //if the black player is not null, and is not your own username
+            // If the black player is not null, and is not your own username
             if (blackPlayer != null && !blackPlayer.equals(myUsername)) {
                 throw new BadRequestException("Black player already taken in this game");
-            }
-            else {
-                dbAccess.getGameDAO().updateGame(new GameData(myGameID, gameData.whiteUsername() , myUsername, gameData.gameName(), gameData.game()));
+            } else {
+                dbAccess.getGameDAO().updateGame(new GameData(myGameID, gameData.whiteUsername(), myUsername, gameData.gameName(), gameData.game()));
             }
         }
-
     }
+
 
     public void clear() throws DataAccessException {
         dbAccess.getGameDAO().clear();

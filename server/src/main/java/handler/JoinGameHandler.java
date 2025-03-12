@@ -32,8 +32,8 @@ public class JoinGameHandler implements Route {
             // Convert JSON body into a JoinRequest object
             JoinRequest joinRequest = gson.fromJson(req.body(), JoinRequest.class);
 
-            // Now set the authToken to the CreateGameRequest object
-            JoinRequest newReq = new JoinRequest(joinRequest.GameID(),joinRequest.playColor(), authToken);
+            // Use the extracted authToken from the header and pass it into the JoinRequest
+            JoinRequest newReq = new JoinRequest(joinRequest.GameID(), joinRequest.playColor(), authToken);
 
             // Call joinGame function in GameService
             gameService.joinGame(newReq);
@@ -48,7 +48,11 @@ public class JoinGameHandler implements Route {
         } catch (DataAccessException e) {
             res.status(500); // Internal Server Error
             return gson.toJson(new ErrorResponse(e.getMessage()));
+        } catch (NumberFormatException e) {
+            // Handle case where the gameID is not a valid integer
+            res.status(400); // Bad Request
+            return gson.toJson(new ErrorResponse("Invalid game ID format"));
         }
     }
-}
 
+}
