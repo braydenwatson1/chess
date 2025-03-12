@@ -30,7 +30,7 @@ public class GameService {
          if (!authExist(myAuthToken)) {
              throw new BadRequestException("AuthToken does not exist.");
          }
-         
+
 
         //get hashset of games from the db
         HashSet<GameData> myHashSet = dbAccess.getGameDAO().listGames();
@@ -78,14 +78,14 @@ public class GameService {
 
     public void joinGame(JoinRequest joinReq) throws BadRequestException, DataAccessException {
         //if request is bad, error
-        if (joinReq == null || joinReq.playColor() == null || joinReq.authData().authToken() == null) {
+        if (joinReq == null || joinReq.playColor() == null || joinReq.authToken() == null) {
             throw new BadRequestException("Error: create game request, game name, and authtoken cannot be null");
         }
 
         int myGameID = joinReq.GameID();
         ChessGame.TeamColor myPlayColor = joinReq.playColor();
-        AuthData myAuthData = joinReq.authData();
-        String myAuthToken = myAuthData.authToken();
+        String myAuthToken = joinReq.authToken();
+        AuthData myAuthData = dbAccess.getAuthDAO().getAuth(myAuthToken);
         String myUsername = myAuthData.username();
 
         //does authToken exist?
