@@ -1,33 +1,43 @@
 package handler;
 
-import dataaccess.DataAccessException;
-import service.BadRequestException;
-import dataaccess.DataAccess;
-import service.UserService;
-import com.google.gson.Gson;
-import spark.Request;
+import Model.ErrorResponse;
 import Model.LoginRequest;
+import Model.LoginResult;
+import service.BadRequestException;
+import service.UserService;
+import spark.Request;
+import spark.Response;
+import spark.Route;
+import com.google.gson.Gson;
+import dataaccess.DataAccessException;
 
-public class LoginHandler extends BaseHandler {
+public class LoginHandler implements Route {
+    private final UserService userService;
+    private final Gson gson = new Gson();
 
-    public LoginHandler(DataAccess dbAccess) {
-        super(dbAccess);
+    public LoginHandler(UserService userService) {
+        this.userService = userService;
     }
 
     @Override
-    protected Object processRequest(Request request, String authToken) throws HandlerErrorException, BadRequestException, DataAccessException {
-        Gson gson = new Gson();
-        // Deserialize request body into LoginRequest object
-        LoginRequest req = gson.fromJson(request.body(), LoginRequest.class);
-
-        // Use the UserService to handle login logic
-        UserService userService = new UserService(getDataAccess());
-
-        // Perform login and return the result
+    public Object handle(Request req, Response res) {
         try {
-            return userService.login(req);
-        } catch (BadRequestException | DataAccessException e) {
-            throw new HandlerErrorException(e.toString());
+            // Convert JSON body into a LoginRequest object
+            LoginRequest loginRequest = gson.fromJson(req.body(), LoginRequest.class);
+
+            // Call the login function in UserService
+            LoginResult result = userService.login(loginRequest);
+
+            // Set HTTP response code
+            res.status(200);
+            return gson.toJson(result);
+
+        } catch (BadRequestException e) {
+            res.status(400); // Bad Request
+            return gson.toJson(new ErrorResponse(e.getMessage()));
+        } catch (DataAccessException e) {
+            res.status(500); // Internal Server Error
+            return gson.toJson(new ErrorResponse(e.getMessage()));
         }
     }
 }

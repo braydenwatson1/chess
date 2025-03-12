@@ -14,8 +14,21 @@ public class Server {
 
         // Register your endpoints and handle exceptions here.
         DataAccess dbAccess = new MemoryDataAccess();
+        UserService userService = new UserService(dbAccess);
+        GameService gameService = new GameService(dbAccess);
 
-        
+        Spark.post("/user", new RegisterHandler(dbAccess));
+        Spark.path("/session", () -> {
+            Spark.post("", new LoginHandler(userService));
+            Spark.delete("", new LogoutHandler(userService));
+        });
+        Spark.path("/game", () -> {
+            Spark.get("", new ListGamesHandler(gameService));
+            Spark.post("", new CreateGameHandler(gameService));
+            Spark.put("", new JoinGameHandler(gameService));
+        });
+        Spark.delete("/db", new ClearHandler(dbAccess));
+
 
 
 
