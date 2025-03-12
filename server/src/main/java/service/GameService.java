@@ -28,7 +28,7 @@ public class GameService {
 
         //does authToken exist?
          if (!authExist(myAuthToken)) {
-             throw new BadRequestException("AuthToken does not exist.");
+             throw new DataAccessException("Error: AuthToken does not exist.");
          }
 
 
