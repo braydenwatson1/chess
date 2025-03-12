@@ -1,8 +1,6 @@
 package handler;
 
-import Model.ErrorResponse;
-import Model.ListRequest;
-import Model.ListResult;
+import Model.*;
 import service.BadRequestException;
 import service.GameService;
 import spark.Request;
@@ -22,11 +20,20 @@ public class ListGamesHandler implements Route {
     @Override
     public Object handle(Request req, Response res) {
         try {
-            // Convert JSON body into a ListRequest object
-            ListRequest listRequest = gson.fromJson(req.body(), ListRequest.class);
+            // Extract authToken from the Authorization header
+            String authToken = req.headers("Authorization");
 
-            // Call listGames function in GameService
-            ListResult result = gameService.listGames(listRequest);
+            if (authToken == null || authToken.isEmpty()) {
+                res.status(400); // Bad Request
+                return gson.toJson(new ErrorResponse("Authorization token is missing"));
+            }
+
+            // Convert JSON body into a CreateGameRequest object (contains gameName)
+            ListRequest ListRequest = gson.fromJson(authToken,  ListRequest.class);
+
+            // Call createGame function in GameService
+            ListResult result = gameService.listGames(ListRequest);
+
 
             // Set HTTP response code
             res.status(200);

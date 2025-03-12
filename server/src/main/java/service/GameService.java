@@ -19,23 +19,18 @@ public class GameService {
 
     public ListResult listGames(ListRequest req) throws BadRequestException, DataAccessException {
         //if request is bad, error
-        if (req == null || req.authData().authToken() == null || req.authData().username() == null) {
-            throw new BadRequestException("listGame request cannot be null");
+        if (req == null || req.authToken() == null) {
+            assert req != null;
+            throw new BadRequestException("listGame request cannot be null: " + req.toString());
         }
 
-        AuthData myAuthData = req.authData();
-        String myAuthToken = req.authData().authToken();
-        String myUsername = req.authData().username();
+        String myAuthToken = req.authToken();
 
         //does authToken exist?
          if (!authExist(myAuthToken)) {
              throw new BadRequestException("AuthToken does not exist.");
          }
-
-        //does AuthToken match up with your username correctly?
-        if (!authMatchUsername(myUsername, myAuthToken)) {
-            throw new BadRequestException("AuthToken Does Not Match Username");
-        }
+         
 
         //get hashset of games from the db
         HashSet<GameData> myHashSet = dbAccess.getGameDAO().listGames();

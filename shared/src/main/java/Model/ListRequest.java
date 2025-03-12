@@ -1,3 +1,3 @@
 package Model;
 
-public record ListRequest(AuthData authData) {}
+public record ListRequest(String authToken) {}
