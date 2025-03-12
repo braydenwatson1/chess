@@ -1,34 +1,34 @@
 package handler;
 
-import service.GameService;
-import dataaccess.DataAccess;
+import service.ClearAllService;
 import dataaccess.DataAccessException;
-import handler.HandlerErrorException;
+import Model.ErrorResponse;
 import spark.Request;
 import spark.Response;
+import spark.Route;
+import com.google.gson.Gson;
 
-public class ClearHandler extends BaseHandler {
+public class ClearHandler implements Route {
+    private final ClearAllService clearAllService;
+    private final Gson gson = new Gson();
 
-    private final GameService gameService;
-
-    // Constructor - initialize GameService
-    public ClearHandler(DataAccess dbAccess, GameService gameService) {
-        super(dbAccess); // Call the BaseHandler constructor
-        this.gameService = gameService;
+    public ClearHandler(ClearAllService clearAllService) {
+        this.clearAllService = clearAllService;
     }
 
     @Override
-    protected Object processRequest(Request request, String authToken) throws HandlerErrorException, DataAccessException {
+    public Object handle(Request req, Response res) {
         try {
-            // Call the clear database method from GameService
-            gameService.cleardb();
+            // Call clearAll function in ClearAllService to clear all data
+            clearAllService.clearAll();
 
-            // Return a success message after clearing the DB
-            return "Database cleared successfully!";
+            // Set HTTP response code
+            res.status(200); // Successful clear
+            return gson.toJson(new ErrorResponse("All data cleared successfully"));
 
         } catch (DataAccessException e) {
-            // Handle database errors
-            throw new HandlerErrorException("Error clearing the database: " + e.getMessage());
+            res.status(500); // Internal Server Error
+            return gson.toJson(new ErrorResponse(e.getMessage()));
         }
     }
 }

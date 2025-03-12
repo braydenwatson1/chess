@@ -18,7 +18,7 @@ public class Server {
         GameService gameService = new GameService(dbAccess);
         ClearAllService clearService = new ClearAllService(dbAccess);
 
-        Spark.post("/user", new RegisterHandler(dbAccess));
+        Spark.post("/user", new RegisterHandler(userService));
         Spark.path("/session", () -> {
             Spark.post("", new LoginHandler(userService));
             Spark.delete("", new LogoutHandler(userService));
@@ -31,7 +31,10 @@ public class Server {
         Spark.delete("/db", new ClearHandler(clearService));
 
 
-
+        Spark.exception(Exception.class, (exception, request, response) -> {
+            response.status(500);
+            response.body("An internal error occurred: " + exception.getMessage());
+        });
 
         //This line initializes the server and can be removed once you have a functioning endpoint
         Spark.init();
