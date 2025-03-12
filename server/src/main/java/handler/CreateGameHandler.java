@@ -2,41 +2,42 @@ package handler;
 
 import Model.CreateGameRequest;
 import Model.CreateGameResult;
-import com.google.gson.Gson;
-import service.GameService;
+import Model.ErrorResponse;
 import service.BadRequestException;
-import dataaccess.DataAccess;
-import dataaccess.DataAccessException;
+import service.GameService;
 import spark.Request;
+import spark.Response;
+import spark.Route;
+import com.google.gson.Gson;
+import dataaccess.DataAccessException;
 
-public class CreateGameHandler extends BaseHandler {
-
+public class CreateGameHandler implements Route {
     private final GameService gameService;
+    private final Gson gson = new Gson();
 
-    // Constructor - initialize the GameService
-    public CreateGameHandler(DataAccess dbAccess, GameService gameService) {
-        super(dbAccess); // Call the BaseHandler constructor
+    public CreateGameHandler(GameService gameService) {
         this.gameService = gameService;
     }
 
     @Override
-    protected Object processRequest(Request request, String authToken) throws HandlerErrorException, BadRequestException, DataAccessException {
+    public Object handle(Request req, Response res) {
         try {
-            // Parse the request body into a CreateGameRequest object
-            CreateGameRequest createGameRequest = new Gson().fromJson(request.body(), CreateGameRequest.class);
+            // Convert JSON body into a CreateGameRequest object
+            CreateGameRequest createGameRequest = gson.fromJson(req.body(), CreateGameRequest.class);
 
-            // Create the game via the GameService
+            // Call createGame function in GameService
             CreateGameResult result = gameService.createGame(createGameRequest);
 
-            // Return the result
-            return result;
+            // Set HTTP response code
+            res.status(200);
+            return gson.toJson(result);
 
         } catch (BadRequestException e) {
-            // Handle bad request errors
-            throw new HandlerErrorException("Bad Request: " + e.getMessage());
+            res.status(400); // Bad Request
+            return gson.toJson(new ErrorResponse(e.getMessage()));
         } catch (DataAccessException e) {
-            // Handle database errors
-            throw new HandlerErrorException("Database error: " + e.getMessage());
+            res.status(500); // Internal Server Error
+            return gson.toJson(new ErrorResponse(e.getMessage()));
         }
     }
 }

@@ -1,45 +1,43 @@
 package handler;
 
-import dataaccess.DataAccess;
-import dataaccess.DataAccessException;
 import Model.JoinRequest;
 import service.BadRequestException;
 import service.GameService;
+import Model.ErrorResponse;
 import spark.Request;
+import spark.Response;
+import spark.Route;
 import com.google.gson.Gson;
+import dataaccess.DataAccessException;
 
-public class JoinGameHandler extends BaseHandler {
+public class JoinGameHandler implements Route {
+    private final GameService gameService;
+    private final Gson gson = new Gson();
 
-    public JoinGameHandler(DataAccess dbAccess) {
-        super(dbAccess);
+    public JoinGameHandler(GameService gameService) {
+        this.gameService = gameService;
     }
 
     @Override
-    protected Object processRequest(Request request, String authToken) throws HandlerErrorException, BadRequestException, DataAccessException {
-        Gson gson = new Gson();
-
-        // Deserialize request body
-        JoinRequest joinRequest = gson.fromJson(request.body(), JoinRequest.class);
-
-        // Ensure authToken is provided
-        if (authToken == null || authToken.isEmpty()) {
-            throw new HandlerErrorException("Auth token required.");
-        }
-
-        // Ensure joinRequest is valid
-        if (joinRequest.GameID() == 0) {
-            throw new HandlerErrorException("Game ID not valid.");
-        }
-
-        // Process the join request
-        GameService gameService = new GameService(getDataAccess());
-        JoinRequest newReq = new JoinRequest(joinRequest.GameID(), joinRequest.playColor(), authToken);
-
+    public Object handle(Request req, Response res) {
         try {
-            gameService.joinGame(newReq);  // It returns null, so no need to return anything
-            return null;
-        } catch (BadRequestException | DataAccessException e) {
-            throw new HandlerErrorException("Fail to join: " + e.getMessage());
+            // Convert JSON body into a JoinRequest object
+            JoinRequest joinRequest = gson.fromJson(req.body(), JoinRequest.class);
+
+            // Call joinGame function in GameService
+            gameService.joinGame(joinRequest);
+
+            // Set HTTP response code
+            res.status(200); // Successful join
+            return gson.toJson(new ErrorResponse("Joined game successfully"));
+
+        } catch (BadRequestException e) {
+            res.status(400); // Bad Request
+            return gson.toJson(new ErrorResponse(e.getMessage()));
+        } catch (DataAccessException e) {
+            res.status(500); // Internal Server Error
+            return gson.toJson(new ErrorResponse(e.getMessage()));
         }
     }
 }
+
