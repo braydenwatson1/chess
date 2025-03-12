@@ -1,36 +1,43 @@
 package handler;
 
-import Model.AuthData;
+import Model.ErrorResponse;
+import Model.ListRequest;
 import Model.ListResult;
-import dataaccess.DataAccess;
-import dataaccess.DataAccessException;
-import service.GameService;
 import service.BadRequestException;
+import service.GameService;
 import spark.Request;
+import spark.Response;
+import spark.Route;
+import com.google.gson.Gson;
+import dataaccess.DataAccessException;
 
-public class ListGamesHandler extends BaseHandler {
+public class ListGamesHandler implements Route {
+    private final GameService gameService;
+    private final Gson gson = new Gson();
 
-    public ListGamesHandler(DataAccess dbAccess) {
-        super(dbAccess);
+    public ListGamesHandler(GameService gameService) {
+        this.gameService = gameService;
     }
 
     @Override
-    protected ListResult processRequest(Request request, String authToken) throws HandlerErrorException, BadRequestException, DataAccessException {
-        // Check if auth token exists before proceeding
-        if (authToken == null|| authToken.isEmpty() ) {
-            throw new HandlerErrorException("Authorization token required.");
+    public Object handle(Request req, Response res) {
+        try {
+            // Convert JSON body into a ListRequest object
+            ListRequest listRequest = gson.fromJson(req.body(), ListRequest.class);
+
+            // Call listGames function in GameService
+            ListResult result = gameService.listGames(listRequest);
+
+            // Set HTTP response code
+            res.status(200);
+            return gson.toJson(result);
+
+        } catch (BadRequestException e) {
+            res.status(400); // Bad Request
+            return gson.toJson(new ErrorResponse(e.getMessage()));
+        } catch (DataAccessException e) {
+            res.status(500); // Internal Server Error
+            return gson.toJson(new ErrorResponse(e.getMessage()));
         }
-
-        // Create GameService and fetch the list of games
-        GameService gameService = new GameService(getDataAccess());
-
-        DataAccess db = getDataAccess();
-        String matchingUsername = db.getAuthDAO().getAuth(authToken).username();
-        AuthData myAuthObj = new AuthData(matchingUsername, authToken);
-
-        ListResult games = gameService.listGames(myAuthObj);
-
-        // Return the list of games
-        return games;
     }
 }
