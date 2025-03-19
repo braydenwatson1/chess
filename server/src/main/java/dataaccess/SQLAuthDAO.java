@@ -2,6 +2,7 @@ package dataaccess;
 
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
 
@@ -27,7 +28,16 @@ public class SQLAuthDAO implements AuthDAO {
         }
     }
 
-
+    @Override
+    public void clear() throws DataAccessException {
+        String sql = "DELETE FROM auth";
+        try (Connection conn = DatabaseManager.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new DataAccessException("Error clearing auth table: " + e.getMessage());
+        }
+    }
 
 }
 
