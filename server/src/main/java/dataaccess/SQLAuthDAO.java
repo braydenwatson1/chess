@@ -29,7 +29,7 @@ public class SQLAuthDAO implements AuthDAO {
 
     @Override
     public void clear() throws DataAccessException {
-        String sql = "DELETE FROM auth";
+        String sql = "TRUNCATE TABLE auth";
         try (Connection conn = DatabaseManager.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.executeUpdate();
