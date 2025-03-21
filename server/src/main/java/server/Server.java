@@ -2,6 +2,7 @@ package server;
 
 import dataaccess.*;
 import dataaccess.memory.MemoryDataAccess;
+import dataaccess.memory.SQLDataAccess;
 import service.*;
 import handler.*;
 import spark.*;
@@ -14,7 +15,7 @@ public class Server {
         Spark.staticFiles.location("web");
 
         // Register your endpoints and handle exceptions here.
-        DataAccess dbAccess = new MemoryDataAccess();
+        DataAccess dbAccess = new SQLDataAccess();
 
 
         UserService userService = new UserService(dbAccess);

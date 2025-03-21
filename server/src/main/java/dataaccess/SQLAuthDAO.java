@@ -7,10 +7,23 @@ import java.sql.*;
 
 public class SQLAuthDAO implements AuthDAO {
 
-    private final Connection con;
+    public SQLAuthDAO() throws DataAccessException {
+        try {
+            DatabaseManager.createDatabase();
+            try (Connection conn = DatabaseManager.getConnection();
+                 Statement stmt = conn.createStatement()) {
 
-    public SQLAuthDAO(Connection con) throws DataAccessException {
-        this.con = con;
+                String createTableSQL = """
+                    CREATE TABLE IF NOT EXISTS auth (
+                        username VARCHAR(100) NOT NULL,
+                        authToken VARCHAR(100) NOT NULL PRIMARY KEY
+                    )""";
+
+                stmt.executeUpdate(createTableSQL);
+            }
+        } catch (SQLException | DataAccessException e) {
+            throw new DataAccessException("Error initializing SQLAuthDAO: " + e.getMessage());
+        }
     }
 
     @Override

@@ -36,7 +36,7 @@ public class SQLDataAccess implements DataAccess {
         }
 
 
-        authDAO = new SQLAuthDAO(newConnection);
+        authDAO = new SQLAuthDAO();
         userDAO = new SQLUserDAO();
         gameDAO = new SQLGameDAO();
 
