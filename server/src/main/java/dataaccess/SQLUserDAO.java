@@ -44,13 +44,17 @@ public class SQLUserDAO implements UserDAO {
     @Override
     public void createUser(UserData newUser) throws DataAccessException {
         String sql = "INSERT INTO users (username, password, email) VALUES (?, ?, ?)";
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            stmt.setString(1, newUser.username());
-            stmt.setString(2, hashPassword(newUser.password()));  // Hashing the password before storing
-            stmt.setString(3, newUser.email());
-            stmt.executeUpdate();
-        } catch (SQLException e) {
-            throw new DataAccessException("Error creating user: " + e.getMessage());
+        try (var myCon = DatabaseManager.getConnection()) {
+            try (PreparedStatement stmt = myCon.prepareStatement(sql)) {
+                stmt.setString(1, newUser.username());
+                stmt.setString(2, hashPassword(newUser.password()));  // Hashing the password before storing
+                stmt.setString(3, newUser.email());
+                stmt.executeUpdate();
+            } catch (SQLException e) {
+                throw new DataAccessException("Error creating user: " + e.getMessage());
+            }
+        } catch (SQLException | DataAccessException e) {
+            throw new DataAccessException(e.getMessage());
         }
     }
 
@@ -80,12 +84,16 @@ public class SQLUserDAO implements UserDAO {
     @Override
     public boolean userExists(String username) throws DataAccessException {
         String sql = "SELECT 1 FROM users WHERE username = ?";
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            stmt.setString(1, username);
-            ResultSet rs = stmt.executeQuery();
-            return rs.next();
-        } catch (SQLException e) {
-            throw new DataAccessException("Error checking if user exists: " + e.getMessage());
+        try (var connection = DatabaseManager.getConnection()) {
+            try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+                stmt.setString(1, username);
+                ResultSet rs = stmt.executeQuery();
+                return rs.next();
+            } catch (SQLException e) {
+                throw new DataAccessException("Error checking if user exists: " + e.getMessage());
+            }
+        } catch (SQLException | DataAccessException e) {
+            throw new DataAccessException(e.getMessage());
         }
     }
 
