@@ -6,53 +6,38 @@ import java.sql.*;
 
 public class SQLUserDAO implements UserDAO {
 
-    private Connection connection;
 
-    public SQLUserDAO(Connection connection) throws DataAccessException {
-        try { DatabaseManager.createDatabase(); }
-        catch (DataAccessException e) {
+    public SQLUserDAO() throws DataAccessException {
+        try { DatabaseManager.createDatabase(); } catch (DataAccessException e) {
             throw new DataAccessException(e.getMessage());
         }
-        try (var newConnection = DatabaseManager.getConnection()) {
-            var maybeNewTable = """            
-                    CREATE TABLE if NOT EXISTS game (
-                                    gameID INT NOT NULL PRIMARY KEY,
-                                    whiteUsername VARCHAR(100),
-                                    blackUsername VARCHAR(100),
-                                    gameName VARCHAR(100),
-                                    chessGame TEXT
+        try (var conn = DatabaseManager.getConnection()) {
+            var maybeTable = """            
+                    CREATE TABLE if NOT EXISTS user (
+                                    username VARCHAR(100) NOT NULL PRIMARY KEY,
+                                    password VARCHAR(100) NOT NULL,
+                                    email VARCHAR(100)
                                     )""";
-            try (var createTableStm = newConnection.prepareStatement(maybeNewTable)) {
-                createTableStm.executeUpdate();
+            try (var createTableStatement = conn.prepareStatement(maybeTable)) {
+                createTableStatement.executeUpdate();
             }
-        }
-        catch (DataAccessException | SQLException e) {
+        } catch (SQLException | DataAccessException e) {
             throw new DataAccessException(e.getMessage());
         }
     }
 
-    private void createUserTableIfNeeded() throws DataAccessException {
-        String createTableSQL = """
-                CREATE TABLE IF NOT EXISTS users (
-                    username VARCHAR(255) NOT NULL PRIMARY KEY,
-                    password VARCHAR(255) NOT NULL,
-                    email VARCHAR(255)
-                )""";
-
-        try (PreparedStatement stmt = connection.prepareStatement(createTableSQL)) {
-            stmt.executeUpdate();
-        } catch (SQLException e) {
-            throw new DataAccessException("Error creating user table: " + e.getMessage());
-        }
-    }
 
     @Override
     public void clear() throws DataAccessException {
         String sql = "DELETE FROM users";
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            stmt.executeUpdate();
-        } catch (SQLException e) {
-            throw new DataAccessException("Error clearing the users table: " + e.getMessage());
+        try (var myCon = DatabaseManager.getConnection()) {
+            try (PreparedStatement stmt = myCon.prepareStatement(sql)) {
+                stmt.executeUpdate();
+            } catch (SQLException e) {
+                throw new DataAccessException("Error clearing the users table: " + e.getMessage());
+            }
+        } catch (SQLException | DataAccessException e) {
+            throw new DataAccessException(e.getMessage());
         }
     }
 
@@ -72,18 +57,23 @@ public class SQLUserDAO implements UserDAO {
     @Override
     public UserData getUser(String username) throws DataAccessException {
         String sql = "SELECT username, password, email FROM users WHERE username = ?";
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            stmt.setString(1, username);
-            ResultSet rs = stmt.executeQuery();
-            if (rs.next()) {
-                String password = rs.getString("password");
-                String email = rs.getString("email");
-                return new UserData(username, password, email);
-            } else {
-                throw new DataAccessException("User not found: " + username);
+
+        try (var Myc = DatabaseManager.getConnection()) {
+            try (PreparedStatement stmt = Myc.prepareStatement(sql)) {
+                stmt.setString(1, username);
+                ResultSet rs = stmt.executeQuery();
+                if (rs.next()) {
+                    String password = rs.getString("password");
+                    String email = rs.getString("email");
+                    return new UserData(username, password, email);
+                } else {
+                    throw new DataAccessException("User not found: " + username);
+                }
+            } catch (SQLException e) {
+                throw new DataAccessException("Error retrieving user: " + e.getMessage());
             }
-        } catch (SQLException e) {
-            throw new DataAccessException("Error retrieving user: " + e.getMessage());
+        }catch (SQLException | DataAccessException e) {
+            throw new DataAccessException(e.getMessage());
         }
     }
 

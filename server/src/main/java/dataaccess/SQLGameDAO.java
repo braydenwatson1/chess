@@ -9,21 +9,20 @@ import java.util.HashSet;
 
 public class SQLGameDAO implements GameDAO {
 
-    public SQLGameDAO() {
-        try { DatabaseManager.createDatabase(); } catch (DataAccessException ex) {
-            throw new RuntimeException(ex);
+    public SQLGameDAO() throws DataAccessException {
+        try { DatabaseManager.createDatabase(); } catch (DataAccessException e) {
+            throw new DataAccessException(e.getMessage());
         }
         try (var conn = DatabaseManager.getConnection()) {
-            var createTestTable = """            
+            var maybeTable = """            
                     CREATE TABLE if NOT EXISTS game (
-                                    gameID INT NOT NULL,
-                                    whiteUsername VARCHAR(255),
-                                    blackUsername VARCHAR(255),
-                                    gameName VARCHAR(255),
-                                    chessGame TEXT,
-                                    PRIMARY KEY (gameID)
+                                    gameID INT NOT NULL PRIMARY KEY,
+                                    whiteUsername VARCHAR(100),
+                                    blackUsername VARCHAR(100),
+                                    gameName VARCHAR(100),
+                                    chessGame TEXT
                                     )""";
-            try (var createTableStatement = conn.prepareStatement(createTestTable)) {
+            try (var createTableStatement = conn.prepareStatement(maybeTable)) {
                 createTableStatement.executeUpdate();
             }
         } catch (SQLException | DataAccessException e) {
