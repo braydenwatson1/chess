@@ -1,6 +1,7 @@
 package server;
 
 import dataaccess.*;
+import dataaccess.memory.MemoryDataAccess;
 import service.*;
 import handler.*;
 import spark.*;
@@ -14,6 +15,8 @@ public class Server {
 
         // Register your endpoints and handle exceptions here.
         DataAccess dbAccess = new MemoryDataAccess();
+
+
         UserService userService = new UserService(dbAccess);
         GameService gameService = new GameService(dbAccess);
         ClearAllService clearService = new ClearAllService(dbAccess);

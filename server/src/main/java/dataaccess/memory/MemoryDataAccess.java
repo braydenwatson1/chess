@@ -1,4 +1,6 @@
-package dataaccess;
+package dataaccess.memory;
+
+import dataaccess.*;
 
 public class MemoryDataAccess implements DataAccess {
 

@@ -9,8 +9,26 @@ public class SQLUserDAO implements UserDAO {
     private Connection connection;
 
     public SQLUserDAO(Connection connection) throws DataAccessException {
-        this.connection = connection;
-        createUserTableIfNeeded();
+        try { DatabaseManager.createDatabase(); }
+        catch (DataAccessException e) {
+            throw new DataAccessException(e.getMessage());
+        }
+        try (var newConnection = DatabaseManager.getConnection()) {
+            var maybeNewTable = """            
+                    CREATE TABLE if NOT EXISTS game (
+                                    gameID INT NOT NULL PRIMARY KEY,
+                                    whiteUsername VARCHAR(100),
+                                    blackUsername VARCHAR(100),
+                                    gameName VARCHAR(100),
+                                    chessGame TEXT
+                                    )""";
+            try (var createTableStm = newConnection.prepareStatement(maybeNewTable)) {
+                createTableStm.executeUpdate();
+            }
+        }
+        catch (DataAccessException | SQLException e) {
+            throw new DataAccessException(e.getMessage());
+        }
     }
 
     private void createUserTableIfNeeded() throws DataAccessException {

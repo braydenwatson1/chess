@@ -1,6 +1,8 @@
-package dataaccess;
+package dataaccess.memory;
 
 import Model.AuthData;
+import dataaccess.AuthDAO;
+import dataaccess.DataAccessException;
 
 import java.util.HashSet;
 import java.util.Objects;
