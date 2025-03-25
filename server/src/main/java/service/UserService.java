@@ -3,6 +3,7 @@ package service;
 import Model.*;
 import dataaccess.DataAccess;
 import dataaccess.DataAccessException;
+import org.mindrot.jbcrypt.BCrypt;
 
 import java.util.Objects;
 import java.util.UUID;
@@ -70,8 +71,8 @@ public class UserService {
             }
 
             // is password correct?
-            if (!Objects.equals(user.password(), myPassword)) {
-                throw new BadRequestException("password is incorrect");
+            if (!BCrypt.checkpw(myPassword, user.password())) {
+                throw new BadRequestException("password is incorrect : correct:" + user.password() + " your answer:" + myPassword);
             }
 
             //create authToken

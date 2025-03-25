@@ -1,8 +1,5 @@
 package dataaccess;
-
-
 import Model.AuthData;
-
 import java.sql.*;
 
 public class SQLAuthDAO implements AuthDAO {
@@ -10,27 +7,26 @@ public class SQLAuthDAO implements AuthDAO {
     public SQLAuthDAO() throws DataAccessException {
         try {
             DatabaseManager.createDatabase();
-            try (Connection conn = DatabaseManager.getConnection();
-                 Statement stmt = conn.createStatement()) {
+            try (Connection c = DatabaseManager.getConnection();) {
 
-                String createTableSQL = """
+                String sql = """
                     CREATE TABLE IF NOT EXISTS auth (
                         username VARCHAR(100) NOT NULL,
                         authToken VARCHAR(100) NOT NULL PRIMARY KEY
                     )""";
-
-                stmt.executeUpdate(createTableSQL);
+                PreparedStatement stmt = c.prepareStatement(sql);
+                stmt.executeUpdate();
             }
         } catch (SQLException | DataAccessException e) {
-            throw new DataAccessException("Error initializing SQLAuthDAO: " + e.getMessage());
+            throw new DataAccessException("Error init SQLAuthDAO: " + e.getMessage());
         }
     }
 
     @Override
     public void clear() throws DataAccessException {
         String sql = "TRUNCATE TABLE auth";
-        try (Connection conn = DatabaseManager.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+        try (Connection c = DatabaseManager.getConnection();
+            PreparedStatement stmt = c.prepareStatement(sql)) {
             stmt.executeUpdate();
         } catch (SQLException e) {
             throw new DataAccessException("Error clearing auth table: " + e.getMessage());
@@ -40,8 +36,8 @@ public class SQLAuthDAO implements AuthDAO {
     @Override
     public void addAuth(AuthData newAuthData) throws DataAccessException {
         String sql = "INSERT INTO auth (username, authToken) VALUES (?, ?)";
-        try (Connection conn = DatabaseManager.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+        try (Connection c = DatabaseManager.getConnection();
+            PreparedStatement stmt = c.prepareStatement(sql)) {
             stmt.setString(1, newAuthData.username());
             stmt.setString(2, newAuthData.authToken());
             stmt.executeUpdate();
@@ -70,8 +66,8 @@ public class SQLAuthDAO implements AuthDAO {
     @Override
     public void deleteAuth(String myAuthToken) throws DataAccessException {
         String sql = "DELETE FROM auth WHERE authToken = ?";
-        try (Connection conn = DatabaseManager.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+        try (Connection c = DatabaseManager.getConnection();
+             PreparedStatement stmt = c.prepareStatement(sql)) {
             stmt.setString(1, myAuthToken);
             int rowsAffected = stmt.executeUpdate();
             if (rowsAffected == 0) {

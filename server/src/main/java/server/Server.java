@@ -1,21 +1,28 @@
 package server;
 
 import dataaccess.*;
-import dataaccess.memory.MemoryDataAccess;
-import dataaccess.memory.SQLDataAccess;
+import dataaccess.SQLDataAccess;
 import service.*;
 import handler.*;
 import spark.*;
 
 public class Server {
 
-    public int run(int desiredPort) throws DataAccessException {
+    public int run(int desiredPort) {
         Spark.port(desiredPort);
 
         Spark.staticFiles.location("web");
 
         // Register your endpoints and handle exceptions here.
-        DataAccess dbAccess = new SQLDataAccess();
+        DataAccess dbAccess = null;
+        try {
+            dbAccess = new SQLDataAccess();
+        } catch (DataAccessException e) {
+            Spark.exception(DataAccessException.class, (exception, req, res) -> {
+                res.status(401);  // Unauthorized status code (or any other status you'd prefer)
+                res.body("Database access error: " + exception.getMessage());  // Error message
+            });
+        }
 
 
         UserService userService = new UserService(dbAccess);

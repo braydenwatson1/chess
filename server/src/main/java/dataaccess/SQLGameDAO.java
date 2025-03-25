@@ -13,7 +13,7 @@ public class SQLGameDAO implements GameDAO {
         try { DatabaseManager.createDatabase(); } catch (DataAccessException e) {
             throw new DataAccessException(e.getMessage());
         }
-        try (var conn = DatabaseManager.getConnection()) {
+        try (var c = DatabaseManager.getConnection()) {
             var maybeTable = """            
                     CREATE TABLE if NOT EXISTS game (
                                     gameID INT NOT NULL PRIMARY KEY,
@@ -22,8 +22,8 @@ public class SQLGameDAO implements GameDAO {
                                     gameName VARCHAR(100),
                                     chessGame TEXT
                                     )""";
-            try (var createTableStatement = conn.prepareStatement(maybeTable)) {
-                createTableStatement.executeUpdate();
+            try (var ps = c.prepareStatement(maybeTable)) {
+                ps.executeUpdate();
             }
         } catch (SQLException | DataAccessException e) {
             throw new RuntimeException(e);
@@ -33,7 +33,7 @@ public class SQLGameDAO implements GameDAO {
     @Override
     public void clear() throws DataAccessException {
         try (var myConnection = DatabaseManager.getConnection()) {
-            try (var statement = myConnection.prepareStatement("TRUNCATE TABLE games")) {
+            try (var statement = myConnection.prepareStatement("TRUNCATE TABLE game")) {
                 statement.executeUpdate();
             } catch (SQLException e) {
                 throw new RuntimeException(e);
@@ -45,7 +45,7 @@ public class SQLGameDAO implements GameDAO {
 
     @Override
     public void addGame(GameData newGameData) throws DataAccessException {
-        String sql = "INSERT INTO games (gameID, whiteUsername, blackUsername, gameName, gameData) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO game (gameID, whiteUsername, blackUsername, gameName, chessGame) VALUES (?, ?, ?, ?, ?)";
         try (var myConnection = DatabaseManager.getConnection()) {
             try (PreparedStatement stmt = myConnection.prepareStatement(sql)) {
                 stmt.setInt(1, newGameData.gameID());
@@ -67,7 +67,7 @@ public class SQLGameDAO implements GameDAO {
 
     @Override
     public GameData getGame(int myGameID) throws DataAccessException {
-        String sql = "SELECT * FROM games WHERE gameID = ?";
+        String sql = "SELECT * FROM game WHERE gameID = ?";
         try (var myConnection = DatabaseManager.getConnection()) {
             try (PreparedStatement stmt = myConnection.prepareStatement(sql)) {
             stmt.setInt(1, myGameID);
@@ -89,7 +89,7 @@ public class SQLGameDAO implements GameDAO {
 
     @Override
     public void deleteGame(int myGameID) throws DataAccessException {
-        String sql = "DELETE FROM games WHERE gameID = ?";
+        String sql = "DELETE FROM game WHERE gameID = ?";
         try (var myConnection = DatabaseManager.getConnection()) {
             try (PreparedStatement stmt = myConnection.prepareStatement(sql)) {
                 stmt.setInt(1, myGameID);
@@ -107,7 +107,7 @@ public class SQLGameDAO implements GameDAO {
 
     @Override
     public HashSet<GameData> listGames() throws DataAccessException {
-        String sql = "SELECT * FROM games";
+        String sql = "SELECT * FROM game";
         try (var myConnection = DatabaseManager.getConnection()) {
             try (Statement stmt = myConnection.createStatement()) {
                 ResultSet rs = stmt.executeQuery(sql);
@@ -127,7 +127,7 @@ public class SQLGameDAO implements GameDAO {
 
     @Override
     public void updateGame(GameData myGame) throws DataAccessException {
-        String sql = "UPDATE games SET whiteUsername = ?, blackUsername = ?, gameName = ?, gameData = ? WHERE gameID = ?";
+        String sql = "UPDATE game SET whiteUsername = ?, blackUsername = ?, gameName = ?, chessGame = ? WHERE gameID = ?";
         try (var myConnection = DatabaseManager.getConnection()) {
             try (PreparedStatement stmt = myConnection.prepareStatement(sql)) {
                 stmt.setString(1, myGame.whiteUsername());
@@ -150,7 +150,7 @@ public class SQLGameDAO implements GameDAO {
 
     @Override
     public boolean gameExists(int gameID) throws DataAccessException {
-        String sql = "SELECT 1 FROM games WHERE gameID = ?";
+        String sql = "SELECT 1 FROM game WHERE gameID = ?";
         try (var myConnection = DatabaseManager.getConnection()) {
             try (PreparedStatement stmt = myConnection.prepareStatement(sql)) {
                 stmt.setInt(1, gameID);
@@ -170,9 +170,9 @@ public class SQLGameDAO implements GameDAO {
         String whiteUsername = rs.getString("whiteUsername");
         String blackUsername = rs.getString("blackUsername");
         String gameName = rs.getString("gameName");
-        String gameDataJson = rs.getString("gameData");  // Retrieve the serialized game data
-        ChessGame gameData = deserializeGame(gameDataJson);  // Deserialize the ChessGame object
-        return new GameData(gameID, whiteUsername, blackUsername, gameName, gameData);
+        String gameDataJson = rs.getString("chessGame");  // Retrieve the serialized game data
+        ChessGame chessGame = deserializeGame(gameDataJson);  // Deserialize the ChessGame object
+        return new GameData(gameID, whiteUsername, blackUsername, gameName, chessGame);
     }
 
     // Method to serialize ChessGame to JSON
