@@ -60,7 +60,7 @@ public class SQLAuthDAO implements AuthDAO {
         } catch (SQLException e) {
             throw new DataAccessException("Error retrieving auth: " + e.getMessage());
         }
-        throw new DataAccessException("Auth Token not found: " + myAuthToken);
+        throw new DataAccessException("Error: Auth Token not found: " + myAuthToken);
     }
 
     @Override
@@ -71,7 +71,7 @@ public class SQLAuthDAO implements AuthDAO {
             stmt.setString(1, myAuthToken);
             int rowsAffected = stmt.executeUpdate();
             if (rowsAffected == 0) {
-                throw new DataAccessException("Auth Token does not exist, unable to delete: " + myAuthToken);
+                throw new DataAccessException("Error: Auth Token does not exist, unable to delete: " + myAuthToken);
             }
         } catch (SQLException e) {
             throw new DataAccessException("Error deleting auth: " + e.getMessage());
