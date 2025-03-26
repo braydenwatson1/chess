@@ -1,10 +1,7 @@
 package dataaccess;
 
-import Model.AuthData;
 import Model.GameData;
 import chess.ChessGame;
-import chess.ChessMove;
-import chess.ChessPosition;
 import chess.InvalidMoveException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -16,7 +13,7 @@ import java.util.HashSet;
 
 public class SQLGameDAOtest {
 
-    
+
     private GameDAO gameDAO;
     private GameData dummyGameData;
 
