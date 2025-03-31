@@ -1,4 +1,6 @@
 
+import Model.LoginRequest;
+import Model.LoginResult;
 import Model.RegisterRequest;
 import Model.RegisterResult;
 import com.google.gson.Gson;
@@ -18,6 +20,11 @@ public class ServerFacade {
         return this.makeRequest("POST", path, req, RegisterResult.class);
     }
 
+    public LoginResult login(LoginRequest req) throws ResponseException {
+        var path = "/session";
+        return this.makeRequest("POST", path, req, LoginResult.class);
+    }
+    
     public void deletePet(int id) throws ResponseException {
         var path = String.format("/pet/%s", id);
         this.makeRequest("DELETE", path, null, null);
