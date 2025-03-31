@@ -1,8 +1,5 @@
 
-import Model.LoginRequest;
-import Model.LoginResult;
-import Model.RegisterRequest;
-import Model.RegisterResult;
+import Model.*;
 import com.google.gson.Gson;
 import java.io.*;
 import java.net.*;
@@ -24,7 +21,13 @@ public class ServerFacade {
         var path = "/session";
         return this.makeRequest("POST", path, req, LoginResult.class);
     }
-    
+
+    //my handler seems to return an empty string for logout, so that is what im trying here
+    public String logout(LogoutRequest req) throws ResponseException {
+        var path = "session";
+        return this.makeRequest("DELETE", path, req, String.class);
+    }
+
     public void deletePet(int id) throws ResponseException {
         var path = String.format("/pet/%s", id);
         this.makeRequest("DELETE", path, null, null);
@@ -81,7 +84,7 @@ public class ServerFacade {
                 }
             }
 
-            throw new ResponseException(status, "Erreor : other failure: " + status);
+            throw new ResponseException(status, "Error : other failure: " + status);
         }
     }
 
