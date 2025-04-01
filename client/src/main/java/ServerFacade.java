@@ -33,6 +33,11 @@ public class ServerFacade {
         return this.makeRequest("GET", path, req, ListResult.class);
     }
 
+    public CreateGameResult createGame(CreateGameRequest req) throws ResponseException {
+        var path = "/game";
+        return this.makeRequest("POST", path, req, CreateGameResult.class);
+    }
+
     public void deletePet(int id) throws ResponseException {
         var path = String.format("/pet/%s", id);
         this.makeRequest("DELETE", path, null, null);
