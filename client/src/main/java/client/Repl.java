@@ -2,6 +2,8 @@ package client;
 
 import java.util.Scanner;
 
+import static client.EscapeSequences.*;
+
 public class Repl {
     private final ChessClient client;
 
@@ -30,10 +32,10 @@ public class Repl {
         System.out.println();
     }
 
-    public void notify(Notification notification) {
-        System.out.println(RED + notification.message());
-        printPrompt();
-    }
+//    public void notify(Notification notification) {
+//        System.out.println(RED + notification.message());
+//        printPrompt();
+//    }
 
     private void printPrompt() {
         System.out.print("\n" + RESET + ">>> " + GREEN);
