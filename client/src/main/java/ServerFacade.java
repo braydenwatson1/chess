@@ -28,6 +28,11 @@ public class ServerFacade {
         return this.makeRequest("DELETE", path, req, String.class);
     }
 
+    public ListResult listGames(ListRequest req) throws ResponseException {
+        var path = "/game";
+        return this.makeRequest("GET", path, req, ListResult.class);
+    }
+
     public void deletePet(int id) throws ResponseException {
         var path = String.format("/pet/%s", id);
         this.makeRequest("DELETE", path, null, null);
