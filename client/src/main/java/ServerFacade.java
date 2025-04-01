@@ -38,6 +38,12 @@ public class ServerFacade {
         return this.makeRequest("POST", path, req, CreateGameResult.class);
     }
 
+    //same as logout. empty string is returned
+    public String joinGame(JoinRequest req) throws ResponseException {
+        var path = "/game";
+        return this.makeRequest("PUT", path, req, String.class);
+    }
+
     public void deletePet(int id) throws ResponseException {
         var path = String.format("/pet/%s", id);
         this.makeRequest("DELETE", path, null, null);
