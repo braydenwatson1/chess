@@ -24,7 +24,7 @@ public class ServerFacade {
 
     //my handler seems to return an empty string for logout, so that is what im trying here
     public String logout(LogoutRequest req) throws ResponseException {
-        var path = "session";
+        var path = "/session";
         return this.makeRequest("DELETE", path, req, String.class);
     }
 
@@ -47,7 +47,7 @@ public class ServerFacade {
     //same as logout. empty string is returned
     public void clear() throws ResponseException {
         var path = "/db";
-        return this.makeRequest("DELETE", path, null, null);
+        this.makeRequest("DELETE", path, null, null);
     }
 
     private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass) throws ResponseException {
@@ -55,11 +55,23 @@ public class ServerFacade {
             URL url = (new URI(serverUrl + path)).toURL();
             HttpURLConnection http = (HttpURLConnection) url.openConnection();
             http.setRequestMethod(method);
-            http.setDoOutput(true);
 
+            // Only set output for methods that require it (POST, PUT)
+            if (method.equals("POST") || method.equals("PUT")) {
+                http.setDoOutput(true);
+            }
+
+            // Write the request body only if necessary
             writeBody(request, http);
+
             http.connect();
             throwIfNotSuccessful(http);
+
+            // Don't attempt to read a response if responseClass is null
+            if (responseClass == null) {
+                return null;
+            }
+
             return readBody(http, responseClass);
         } catch (ResponseException ex) {
             throw ex;
@@ -67,7 +79,6 @@ public class ServerFacade {
             throw new ResponseException(500, ex.getMessage());
         }
     }
-
 
     private static void writeBody(Object request, HttpURLConnection http) throws IOException {
         if (request != null) {
