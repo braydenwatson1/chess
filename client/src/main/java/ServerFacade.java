@@ -44,22 +44,10 @@ public class ServerFacade {
         return this.makeRequest("PUT", path, req, String.class);
     }
 
-    public void deletePet(int id) throws ResponseException {
-        var path = String.format("/pet/%s", id);
-        this.makeRequest("DELETE", path, null, null);
-    }
-
-    public void deleteAllPets() throws ResponseException {
-        var path = "/pet";
-        this.makeRequest("DELETE", path, null, null);
-    }
-
-    public Pet[] listPets() throws ResponseException {
-        var path = "/pet";
-        record listPetResponse(Pet[] pet) {
-        }
-        var response = this.makeRequest("GET", path, null, listPetResponse.class);
-        return response.pet();
+    //same as logout. empty string is returned
+    public void clear() throws ResponseException {
+        var path = "/db";
+        return this.makeRequest("DELETE", path, null, null);
     }
 
     private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass) throws ResponseException {
@@ -105,13 +93,15 @@ public class ServerFacade {
     }
 
     private static <T> T readBody(HttpURLConnection http, Class<T> responseClass) throws IOException {
+        if (responseClass == null) {
+            return null; // No response expected
+        }
+
         T response = null;
         if (http.getContentLength() < 0) {
             try (InputStream respBody = http.getInputStream()) {
                 InputStreamReader reader = new InputStreamReader(respBody);
-                if (responseClass != null) {
-                    response = new Gson().fromJson(reader, responseClass);
-                }
+                response = new Gson().fromJson(reader, responseClass);
             }
         }
         return response;
