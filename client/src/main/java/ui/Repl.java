@@ -14,11 +14,11 @@ import static ui.EscapeSequences.*;
 public class Repl {
 
     ServerFacade server;
-//    InnerRepl innerRepl;
+    InnerRepl innerRepl;
 
     public Repl(ServerFacade server) {
         this.server = server;
-//        innerRepl = new InnerRepl(server);
+        innerRepl = new InnerRepl(server);
     }
 
     public void run() {
