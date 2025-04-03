@@ -1,5 +1,6 @@
 import chess.*;
 import client.ServerFacade;
+import ui.Repl;
 
 public class Main {
     public static void main(String[] args) {
@@ -8,6 +9,6 @@ public class Main {
         var serverUrl = "http://localhost:8080";
         ServerFacade server = new ServerFacade(serverUrl);
 
-        
+        new Repl(server).run();
     }
 }
