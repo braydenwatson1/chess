@@ -57,18 +57,21 @@ public class ServerFacade {
             HttpURLConnection http = (HttpURLConnection) url.openConnection();
             http.setRequestMethod(method);
 
-            // Only set output for methods that require it (POST, PUT)
-            if (method.equals("POST") || method.equals("PUT")) {
-                http.setDoOutput(true);
+            // Automatically set Authorization header if request has an authToken
+            String authToken = extractAuthToken(request);
+            if (authToken != null) {
+                http.setRequestProperty("Authorization", authToken);
+                System.out.println(http.getHeaderFields().toString());
             }
 
-            // Write the request body only if necessary
-            writeBody(request, http);
-
+            // Set output only for POST/PUT methods
+            if (method.equals("POST") || method.equals("PUT")) {
+                http.setDoOutput(true);
+                writeBody(request, http);
+            }
             http.connect();
             throwIfNotSuccessful(http);
 
-            // Don't attempt to read a response if responseClass is null
             if (responseClass == null) {
                 return null;
             }
@@ -80,6 +83,8 @@ public class ServerFacade {
             throw new ResponseException(500, ex.getMessage());
         }
     }
+
+
 
     private static void writeBody(Object request, HttpURLConnection http) throws IOException {
         if (request != null) {
@@ -117,6 +122,20 @@ public class ServerFacade {
             }
         }
         return response;
+    }
+
+
+    private String extractAuthToken(Object request) {
+        if (request == null) {
+            return null;
+        }
+        try {
+            // Check if request object has a method getAuthToken()
+            var method = request.getClass().getMethod("authToken");
+            return (String) method.invoke(request);
+        } catch (Exception e) {;
+            return null;  // If method doesn't exist, just return null
+        }
     }
 
 

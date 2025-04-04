@@ -22,18 +22,15 @@ public class ListGamesHandler implements Route {
         try {
             // Extract authToken from the Authorization header
             String authToken = req.headers("Authorization");
-
             if (authToken == null || authToken.isEmpty()) {
                 res.status(400); // Bad Request
                 return gson.toJson(new ErrorResponse("Authorization token is missing"));
             }
-
             // Create the ListRequest object and set the authToken
             ListRequest listRequest = new ListRequest(authToken);
 
             // Call listGames function in GameService
             ListResult result = gameService.listGames(listRequest);
-
             // Set HTTP response code
             res.status(200);
             return gson.toJson(result);

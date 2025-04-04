@@ -42,16 +42,17 @@ public class Repl {
                 try {
                     LoginResult res = server.login(new LoginRequest(results[1], results[2]));
 
-                    if (res.authToken() != null) {  // Assuming LoginResult has getAuthToken()
+                    if (res.authToken() != null) {
                         System.out.println(SET_TEXT_COLOR_GREEN + "Login successful!" + RESET_TEXT_COLOR);
                         System.out.println("DEBUG: Server response -> " + new Gson().toJson(res));
 
-                        // innerRepl.run(server); // Uncomment when InnerRepl is ready
+                        innerRepl.run(res.authToken());
                     } else {
                         System.out.println(SET_TEXT_COLOR_RED + "Login failed." + RESET_TEXT_COLOR);
                     }
 
                     System.out.println(SET_TEXT_COLOR_YELLOW + "You have been logged out." + RESET_TEXT_COLOR);
+                    printHelp();
                 } catch (Exception e) {  // Catch any exception
                     System.out.println(SET_TEXT_COLOR_RED);
                     System.out.println("Username and password invalid");  // Print the error message
@@ -70,8 +71,16 @@ public class Repl {
                     RegisterResult res = server.register(new RegisterRequest(results[1], results[2], results[3]));
                     System.out.println("Logging you in...");
                     LoginResult Lres = server.login(new LoginRequest(results[1], results[2]));
-                    //innerRepl.run(server);
+                    if (res.authToken() != null) {
+                        System.out.println(SET_TEXT_COLOR_GREEN + "Login successful!" + RESET_TEXT_COLOR);
+                        System.out.println("DEBUG: Server response -> " + new Gson().toJson(res));
+
+                        innerRepl.run(Lres.authToken());
+                    } else {
+                        System.out.println(SET_TEXT_COLOR_RED + "Login failed." + RESET_TEXT_COLOR);
+                    }
                     System.out.println(SET_TEXT_COLOR_YELLOW + "You have been logged out." + RESET_TEXT_COLOR);
+                    printHelp();
                 } catch (Exception e) {
                     System.out.println("Registration failed:");
                 }

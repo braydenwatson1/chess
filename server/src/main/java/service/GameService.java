@@ -19,6 +19,7 @@ public class GameService {
 
     public ListResult listGames(ListRequest req) throws BadRequestException, DataAccessException {
         //if request is bad, error
+        System.out.println("DEBUG: WE ARE IN SERVICE IN THE LIST GAMES FUNCTION");
         if (req == null || req.authToken() == null) {
             assert req != null;
             throw new BadRequestException("listGame request cannot be null: " + req.toString());
@@ -33,8 +34,13 @@ public class GameService {
 
 
         //get hashset of games from the db
+        System.out.println("DEBUG: WE ARE ABOUT TO GET GAME DAO AND LIST GAMES FROM DATA ACCESS");
         HashSet<GameData> myHashSet = dbAccess.getGameDAO().listGames();
 
+        if (myHashSet.isEmpty()) {
+            System.out.println("DEBUG IN SERVICE ABOUT TO RETURN A NEW LIST RESULT (EMPTY)");
+            return new ListResult(null);
+        }
         HashSet<GameListData> simplifiedGames = new HashSet<>();
         for (GameData game : myHashSet) {
             GameListData simplifiedGame = new GameListData(
