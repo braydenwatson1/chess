@@ -45,8 +45,14 @@ public class InnerRepl {
                 } else {
                     String id = results[1];
                     String color = results[2];
-                    joinGame(id, color, authToken);
-                    //run the repl
+                    if (!color.equalsIgnoreCase("white") && !color.equalsIgnoreCase("black")) {
+                    System.out.println("Not a valid Color. Please try your join request again.");
+                    }
+                    else {
+                        joinGame(id, color, authToken);
+                        BoardPrint bp = new BoardPrint(new ChessGame());
+                        bp.printBoard(color,null);
+                    }
                 }
             }
             else if (results[0].equals("create")) {
