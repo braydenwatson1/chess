@@ -23,10 +23,9 @@ public class ServerFacade {
         return this.makeRequest("POST", path, req, LoginResult.class);
     }
 
-    //my handler seems to return an empty string for logout, so that is what im trying here
-    public String logout(LogoutRequest req) throws ResponseException {
+    public void logout(LogoutRequest req) throws ResponseException {
         var path = "/session";
-        return this.makeRequest("DELETE", path, req, String.class);
+        this.makeRequest("DELETE", path, req, null);
     }
 
     public ListResult listGames(ListRequest req) throws ResponseException {
@@ -39,10 +38,9 @@ public class ServerFacade {
         return this.makeRequest("POST", path, req, CreateGameResult.class);
     }
 
-    //same as logout. empty string is returned
     public String joinGame(JoinRequest req) throws ResponseException {
         var path = "/game";
-        return this.makeRequest("PUT", path, req, String.class);
+        return this.makeRequest("PUT", path, req, null);
     }
 
     //same as logout. empty string is returned
@@ -61,7 +59,6 @@ public class ServerFacade {
             String authToken = extractAuthToken(request);
             if (authToken != null) {
                 http.setRequestProperty("Authorization", authToken);
-                System.out.println(http.getHeaderFields().toString());
             }
 
             // Set output only for POST/PUT methods
@@ -71,15 +68,17 @@ public class ServerFacade {
             }
             http.connect();
             throwIfNotSuccessful(http);
-
             if (responseClass == null) {
                 return null;
             }
 
             return readBody(http, responseClass);
         } catch (ResponseException ex) {
+            System.out.println("DEBUG: ErROR caught 1");
             throw ex;
         } catch (Exception ex) {
+            System.out.println("DEBUG: ErROR caught 2");
+            System.out.println("Error is:" + ex.getMessage());
             throw new ResponseException(500, ex.getMessage());
         }
     }
@@ -113,7 +112,6 @@ public class ServerFacade {
         if (responseClass == null) {
             return null; // No response expected
         }
-
         T response = null;
         if (http.getContentLength() < 0) {
             try (InputStream respBody = http.getInputStream()) {

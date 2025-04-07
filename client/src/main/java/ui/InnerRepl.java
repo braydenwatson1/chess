@@ -1,8 +1,10 @@
 package ui;
 
 import Model.*;
+import chess.ChessGame;
 import client.ResponseException;
 import client.ServerFacade;
+import org.junit.jupiter.params.shadow.com.univocity.parsers.annotations.LowerCase;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -40,19 +42,35 @@ public class InnerRepl {
                 listGames(authToken);
             }
             else if (results[0].equals("join")) {
-                loggedout=true;
-                break;
+
+                if (results.length != 3) {
+                    System.out.println("Incorrect format. Unable to process your join game request.");
+                    printHelp();
+                } else {
+                    String id = results[1];
+                    String color = results[2];
+                    joinGame(id, color, authToken);
+                    //run the repl
+                }
             }
             else if (results[0].equals("create")) {
-                loggedout=true;
-                break;
+                if (results.length != 2) {
+                    System.out.println("Incorrect format. Unable to process your create game request.");
+                    printHelp();
+                } else {
+                    String name = results[1];
+                    CreateGameResult result = createGame(name, authToken);
+                    if (result == null) {
+                        System.out.println("There was an error in your create game request. please try again.");
+                    }
+                }
             }
             else if (results[0].equals("observe")) {
-                loggedout=true;
-                break;
+                System.out.println("DEBUG: havent set this up yet");
             }
             else {
-
+                System.out.println("Command '" + results[0] + "' is not recognized.");
+                printHelp();
             }
         }
         // if you reach this point, this logs you out. there is nothing to return
@@ -85,20 +103,19 @@ public class InnerRepl {
             Collection<GameListData> dataList = listResult.games();
             HashSet<GameListData> gamesList = new HashSet<GameListData>();
             gamesList.addAll(dataList);
-            System.out.println("gamesList is: " + gamesList.toString());
             HashSet<String> printList = new HashSet<>();
             for(GameListData G : gamesList) {
                 if (G.blackUsername() == null && G.whiteUsername() == null) {
-                    printList.add("Game ID: " + Integer.toString(G.gameID()) + " -<>- Game Name: " + G.gameName() + " -<>- White Player: <SLOT EMPTY> -<>- Black Player: <SLOT EMPTY>");
+                    printList.add("Game ID Number: " + Integer.toString(G.gameID()) + " -<>- Game Name: " + G.gameName() + " -<>- White Player: <SLOT EMPTY> -<>- Black Player: <SLOT EMPTY>");
                 }
                 else if (G.blackUsername() != null && G.whiteUsername() != null){
-                    printList.add("Game ID: " + Integer.toString(G.gameID()) + " -<>- Game Name: " + G.gameName() + " -<>- White Player: " + G.whiteUsername() + " -<>- Black Player: " + G.blackUsername());
+                    printList.add("Game ID Number: " + Integer.toString(G.gameID()) + " -<>- Game Name: " + G.gameName() + " -<>- White Player: " + G.whiteUsername() + " -<>- Black Player: " + G.blackUsername());
                 }
                 else if (G.blackUsername() == null && G.whiteUsername() != null) {
-                    printList.add("Game ID: " + Integer.toString(G.gameID()) + " -<>- Game Name: " + G.gameName() + " -<>- White Player: " + G.whiteUsername() + " -<>- Black Player: <SLOT EMPTY>");
+                    printList.add("Game ID Number: " + Integer.toString(G.gameID()) + " -<>- Game Name: " + G.gameName() + " -<>- White Player: " + G.whiteUsername() + " -<>- Black Player: <SLOT EMPTY>");
                 }
                 else if (G.blackUsername() != null && G.whiteUsername() == null) {
-                    printList.add("Game ID: " + Integer.toString(G.gameID()) + " -<>- Game Name: " + G.gameName() + " -<>- White Player: <SLOT EMPTY> -<>- Black Player: " + G.blackUsername());
+                    printList.add("Game ID Number: " + Integer.toString(G.gameID()) + " -<>- Game Name: " + G.gameName() + " -<>- White Player: <SLOT EMPTY> -<>- Black Player: " + G.blackUsername());
                 }
             }
             for (String line : printList) {
@@ -106,6 +123,48 @@ public class InnerRepl {
             }
         } catch (Exception e) {
             System.out.println(SET_TEXT_COLOR_RED + "Unexpected Error: contact admin. Unable to list games:" + e.getMessage() + e.getLocalizedMessage() + RESET_TEXT_COLOR);
+        }
+    }
+
+    private void joinGame(String ID, String color, String authToken) {
+        JoinRequest req = null;
+        if (color.toLowerCase().equals("white")) {
+            req = new JoinRequest(ID, ChessGame.TeamColor.WHITE, authToken);
+        } else if (color.toLowerCase().equals("black")) {
+            req = new JoinRequest(ID, ChessGame.TeamColor.BLACK, authToken);
+        } else {
+            System.out.println(SET_TEXT_COLOR_RED + "join request failed. invalid color choice" + RESET_TEXT_COLOR);
+            printHelp();
+        }
+        //
+        try {
+            server.joinGame(req);
+            System.out.println("Joining game now...");
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+
+    }
+
+    private CreateGameResult createGame(String gameName, String authToken) {
+        CreateGameRequest req = null;
+        if (gameName != null && authToken != null) {
+            req = new CreateGameRequest(gameName, authToken);
+        } else {
+            System.out.println(SET_TEXT_COLOR_RED + "create game request failed. make sure to follow the proper format" + RESET_TEXT_COLOR);
+            printHelp();
+            return null;
+        }
+        //
+        try {
+            CreateGameResult result = server.createGame(req);
+            System.out.println(SET_TEXT_COLOR_GREEN + "Game created Successfully. Available to join now! Here are all the current games: " + RESET_TEXT_COLOR);
+            listGames(authToken);
+            printHelp();
+            return result;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return  null;
         }
     }
 
