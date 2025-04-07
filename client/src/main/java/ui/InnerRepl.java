@@ -2,12 +2,8 @@ package ui;
 
 import Model.*;
 import chess.ChessGame;
-import client.ResponseException;
 import client.ServerFacade;
-import org.junit.jupiter.params.shadow.com.univocity.parsers.annotations.LowerCase;
-
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Scanner;
 
