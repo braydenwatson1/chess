@@ -44,7 +44,6 @@ public class Repl {
 
                     if (res.authToken() != null) {
                         System.out.println(SET_TEXT_COLOR_GREEN + "Login successful!" + RESET_TEXT_COLOR);
-                        System.out.println("DEBUG: Server response -> " + new Gson().toJson(res));
 
                         innerRepl.run(res.authToken());
                     } else {
@@ -68,13 +67,12 @@ public class Repl {
                 }
                 try {
                     System.out.println("Registering...");
-                    RegisterResult res = server.register(new RegisterRequest(results[1], results[2], results[3]));
+                    RegisterRequest newReq = new RegisterRequest(results[1], results[2], results[3]);
+                    RegisterResult res = server.register(newReq);
                     System.out.println("Logging you in...");
                     LoginResult Lres = server.login(new LoginRequest(results[1], results[2]));
                     if (res.authToken() != null) {
                         System.out.println(SET_TEXT_COLOR_GREEN + "Login successful!" + RESET_TEXT_COLOR);
-                        System.out.println("DEBUG: Server response -> " + new Gson().toJson(res));
-
                         innerRepl.run(Lres.authToken());
                     } else {
                         System.out.println(SET_TEXT_COLOR_RED + "Login failed." + RESET_TEXT_COLOR);
@@ -82,7 +80,7 @@ public class Repl {
                     System.out.println(SET_TEXT_COLOR_YELLOW + "You have been logged out." + RESET_TEXT_COLOR);
                     printHelp();
                 } catch (Exception e) {
-                    System.out.println("Registration failed:");
+                    System.out.println("Registration failed: Username taken already");
                 }
             }
             else if (results[0].equals("quit")) {

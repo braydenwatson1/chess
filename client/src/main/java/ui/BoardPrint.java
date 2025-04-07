@@ -44,9 +44,9 @@ public class BoardPrint {
         // If black, reverse so black faces forward
         if (teamColor == ChessGame.TeamColor.BLACK)
         {
-// Print the row identifiers
+            // Print the row identifiers
             output.append("    a  b  c  d  e  f  g  h    \n");
-            for (int rowNum = 8; rowNum > 0; rowNum--) {
+            for (int rowNum = 1; rowNum < 9; rowNum++) {
 
                 output.append(" " + rowNum + " ");
 

@@ -138,12 +138,13 @@ public class InnerRepl {
             System.out.println(SET_TEXT_COLOR_RED + "join request failed. invalid color choice" + RESET_TEXT_COLOR);
             printHelp();
         }
+
         //
         try {
             server.joinGame(req);
             System.out.println("Joining game now...");
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            System.out.println(SET_TEXT_COLOR_RED + "Failed to join. Please ensure the game ID was entered correctly, and that your requested color is empty" + RESET_TEXT_COLOR);
         }
 
     }

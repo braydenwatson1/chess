@@ -38,9 +38,9 @@ public class ServerFacade {
         return this.makeRequest("POST", path, req, CreateGameResult.class);
     }
 
-    public String joinGame(JoinRequest req) throws ResponseException {
+    public void joinGame(JoinRequest req) throws ResponseException {
         var path = "/game";
-        return this.makeRequest("PUT", path, req, null);
+        this.makeRequest("PUT", path, req, null);
     }
 
     //same as logout. empty string is returned
@@ -74,11 +74,8 @@ public class ServerFacade {
 
             return readBody(http, responseClass);
         } catch (ResponseException ex) {
-            System.out.println("DEBUG: ErROR caught 1");
             throw ex;
         } catch (Exception ex) {
-            System.out.println("DEBUG: ErROR caught 2");
-            System.out.println("Error is:" + ex.getMessage());
             throw new ResponseException(500, ex.getMessage());
         }
     }
