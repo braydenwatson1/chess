@@ -54,7 +54,7 @@ public class Repl {
                     printHelp();
                 } catch (Exception e) {  // Catch any exception
                     System.out.println(SET_TEXT_COLOR_RED);
-                    System.out.println("Username and password invalid");  // Print the error message
+                    System.out.println("Login failed. Username and password invalid");  // Print the error message
                     System.out.println(RESET_TEXT_COLOR);
                 }
             }
@@ -86,6 +86,13 @@ public class Repl {
             else if (results[0].equals("quit")) {
                 quited = true;
                 break;
+            }
+            else if (results[0].equals("admin override clear")) {
+                try {
+                    server.clear();
+                } catch (Exception e) {
+                    System.out.println("Admin override to clear database failed");
+                }
             }
             else {
                 System.out.println("Command '" + results[0] + "' is not recognized.");
