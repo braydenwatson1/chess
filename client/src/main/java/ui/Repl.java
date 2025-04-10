@@ -45,15 +45,15 @@ public class Repl {
                         System.out.println(SET_TEXT_COLOR_GREEN + "Login successful!" + RESET_TEXT_COLOR);
 
                         innerRepl.run(res.authToken());
+                        System.out.println(SET_TEXT_COLOR_YELLOW + "You have been logged out." + RESET_TEXT_COLOR);
                     } else {
                         System.out.println(SET_TEXT_COLOR_RED + "Login failed." + RESET_TEXT_COLOR);
                     }
 
-                    System.out.println(SET_TEXT_COLOR_YELLOW + "You have been logged out." + RESET_TEXT_COLOR);
                     printHelp();
                 } catch (Exception e) {  // Catch any exception
                     System.out.println(SET_TEXT_COLOR_RED);
-                    System.out.println("Login failed. Username and password invalid");  // Print the error message
+                    System.out.println("Login failed."); 
                     System.out.println(RESET_TEXT_COLOR);
                 }
             }
@@ -69,7 +69,10 @@ public class Repl {
                     RegisterRequest newReq = new RegisterRequest(results[1], results[2], results[3]);
                     RegisterResult res = server.register(newReq);
                     System.out.println("Logging you in...");
-                    LoginResult Lres = server.login(new LoginRequest(results[1], results[2]));
+                    LoginRequest logReq = new LoginRequest(results[1], results[2]);
+
+                    LoginResult Lres = server.login(logReq);
+
                     if (res.authToken() != null) {
                         System.out.println(SET_TEXT_COLOR_GREEN + "Login successful!" + RESET_TEXT_COLOR);
                         innerRepl.run(Lres.authToken());
@@ -86,7 +89,7 @@ public class Repl {
                 quited = true;
                 break;
             }
-            else if (results[0].equals("admin override clear")) {
+            else if (results[0].equals("admin") && results[1].equals("override") && results[2].equals("clear")) {
                 try {
                     server.clear();
                 } catch (Exception e) {

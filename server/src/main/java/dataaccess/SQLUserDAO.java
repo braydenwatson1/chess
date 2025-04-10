@@ -6,7 +6,6 @@ import java.sql.*;
 
 public class SQLUserDAO implements UserDAO {
 
-
     public SQLUserDAO() throws DataAccessException {
         try { DatabaseManager.createDatabase(); } catch (DataAccessException e) {
             throw new DataAccessException(e.getMessage());
@@ -43,17 +42,18 @@ public class SQLUserDAO implements UserDAO {
     @Override
     public void createUser(UserData newUser) throws DataAccessException {
         String sql = "INSERT INTO user (username, password, email) VALUES (?, ?, ?)";
-        try (var c = DatabaseManager.getConnection()) {
-            try (PreparedStatement stmt = c.prepareStatement(sql)) {
-                stmt.setString(1, newUser.username());
-                stmt.setString(2, hashPassword(newUser.password()));  // Hashing the password before storing
-                stmt.setString(3, newUser.email());
-                stmt.executeUpdate();
-            } catch (SQLException e) {
-                throw new DataAccessException("Error creating user: " + e.getMessage());
-            }
-        } catch (SQLException | DataAccessException e) {
-            throw new DataAccessException(e.getMessage());
+        try (var c = DatabaseManager.getConnection();
+             PreparedStatement stmt = c.prepareStatement(sql)) {
+
+            String hashedPassword = hashPassword(newUser.password());
+
+            stmt.setString(1, newUser.username());
+            stmt.setString(2, hashedPassword);
+            stmt.setString(3, newUser.email());
+            stmt.executeUpdate();
+
+        } catch (SQLException e) {
+            throw new DataAccessException("Error creating user: " + e.getMessage());
         }
     }
 
@@ -70,12 +70,12 @@ public class SQLUserDAO implements UserDAO {
                     String email = rs.getString("email");
                     return new UserData(username, password, email);
                 } else {
-                    throw new DataAccessException("User not found: " + username);
+                    throw new DataAccessException("Error: User not found: " + username);
                 }
             } catch (SQLException e) {
                 throw new DataAccessException("Error retrieving user: " + e.getMessage());
             }
-        }catch (SQLException | DataAccessException e) {
+        } catch (SQLException | DataAccessException e) {
             throw new DataAccessException(e.getMessage());
         }
     }
@@ -97,19 +97,21 @@ public class SQLUserDAO implements UserDAO {
     }
 
     @Override
-    public void authenticateUser(String username, String password) throws DataAccessException {
+    public void authenticateUser(String username, String rawPassword) throws DataAccessException {
         UserData user = getUser(username);
-        if (!passwordMatches(password, user.password())) {
-            throw new DataAccessException("Username and Password wrong buddy.");
+        String hashedPassword = user.password();
+
+        boolean isMatch = passwordMatches(rawPassword, hashedPassword);
+
+        if (!isMatch) {
+            throw new DataAccessException("Incorrect password.");
         }
     }
 
-    // Helper method to hash the password
     private String hashPassword(String password) {
         return BCrypt.hashpw(password, BCrypt.gensalt());
     }
 
-    // Helper method to check if the password matches the hashed password in the database
     private boolean passwordMatches(String rawP, String hashedP) {
         return BCrypt.checkpw(rawP, hashedP);
     }

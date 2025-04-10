@@ -51,6 +51,7 @@ public class ServerFacade {
 
     private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass) throws ResponseException {
         try {
+
             URL url = (new URI(serverUrl + path)).toURL();
             HttpURLConnection http = (HttpURLConnection) url.openConnection();
             http.setRequestMethod(method);
@@ -71,7 +72,6 @@ public class ServerFacade {
             if (responseClass == null) {
                 return null;
             }
-
             return readBody(http, responseClass);
         } catch (ResponseException ex) {
             throw ex;

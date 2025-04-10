@@ -18,78 +18,44 @@ public class UserService {
     }
 
     public RegisterResult register(RegisterRequest regReq) throws BadRequestException, DataAccessException, ForbiddenException {
-        // if request is bad, error
         if (regReq == null || regReq.username() == null || regReq.password() == null || regReq.email() == null) {
-            throw new BadRequestException("Error: Username, Password, and email cannot be null. See UserService class: register() function");
+            throw new BadRequestException("Error: Missing required fields in RegisterRequest");
         }
 
-        String myUsername = regReq.username();
-        String myPassword = regReq.password();
-        String myEmail = regReq.email();
+        String username = regReq.username();
+        String password = regReq.password();
+        String email = regReq.email();
 
-        if (dbAccess.getUserDAO().userExists(myUsername)) {
-            throw new ForbiddenException("User already exists. error in registration");
+        if (dbAccess.getUserDAO().userExists(username)) {
+            throw new ForbiddenException("Error: User already exists");
         }
 
-        // hash the password before storing
-        String hashedPassword = org.mindrot.jbcrypt.BCrypt.hashpw(myPassword, org.mindrot.jbcrypt.BCrypt.gensalt());
-
-        // create UserData object to insert into db
-        UserData newUser = new UserData(myUsername, hashedPassword, myEmail);
-
-        // call createUser function
+        // No hashing here — let DAO handle it
+        UserData newUser = new UserData(username, password, email);
         dbAccess.getUserDAO().createUser(newUser);
 
-        // create authToken
-        String authToken = java.util.UUID.randomUUID().toString();
-        AuthData newAuthData = new AuthData(myUsername, authToken);
+        String authToken = UUID.randomUUID().toString();
+        dbAccess.getAuthDAO().addAuth(new AuthData(username, authToken));
 
-        // add authToken to db
-        dbAccess.getAuthDAO().addAuth(newAuthData);
-
-        RegisterResult FinalResult = new RegisterResult(myUsername, authToken);
-
-        // return the authToken & username
-        return FinalResult;
+        return new RegisterResult(username, authToken);
     }
 
-
     public LoginResult login(LoginRequest logReq) throws BadRequestException, DataAccessException {
-            //if request is bad, error
-            if (logReq == null || logReq.username() == null || logReq.password() == null) {
-                throw new BadRequestException("Error: Username, Password cannot be null. See UserService class: register() function");
-            }
-
-            String myUsername = logReq.username();
-            String myPassword = logReq.password();
-
-            //authorization
-            UserData user;
-
-            try {
-                user = dbAccess.getUserDAO().getUser(myUsername);
-
-            } catch (DataAccessException e) {
-                throw new BadRequestException("User not found: " + myUsername);
-            }
-
-            // is password correct?
-            if (!BCrypt.checkpw(myPassword, user.password())) {
-                throw new BadRequestException("password is incorrect : correct:" + user.password() + " your answer:" + myPassword);
-            }
-
-            //create authToken
-            String authTokenNum = UUID.randomUUID().toString();
-            AuthData newAuthToken = new AuthData(myUsername, authTokenNum);
-
-            //add authToken to db
-            dbAccess.getAuthDAO().addAuth(newAuthToken);
-
-            LoginResult FinalResult = new LoginResult(myUsername, authTokenNum);
-
-            //return the authToken & username
-            return FinalResult;
+        if (logReq == null || logReq.username() == null || logReq.password() == null) {
+            throw new BadRequestException("Error: Missing username or password in LoginRequest");
         }
+
+        String username = logReq.username();
+        String password = logReq.password();
+
+        dbAccess.getUserDAO().authenticateUser(username, password); // This will throw if wrong
+
+        String authToken = UUID.randomUUID().toString();
+        dbAccess.getAuthDAO().addAuth(new AuthData(username, authToken));
+
+        return new LoginResult(username, authToken);
+    }
+
         public void logout(LogoutRequest logReq) throws BadRequestException, DataAccessException {
             //if request is bad, error
             if (logReq == null || logReq.authToken() == null) {
