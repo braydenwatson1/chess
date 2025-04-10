@@ -81,7 +81,8 @@ public class InnerRepl {
     private void printHelp() {
             System.out.println(SET_TEXT_COLOR_BLUE);
             System.out.println("to list all games, enter 'list'");
-            System.out.println("to enter a game as a player, enter: 'join [BLACK or WHITE] GAME-NAME");
+            System.out.println("to create a new game, enter: 'create <GAME NAME>' and please note that your game name cannot have any spaces (One word is preferable)");
+            System.out.println("to enter a game as a player, enter: 'join [BLACK or WHITE] GAME-ID-NUMBER");
             System.out.println("for help menu, enter: 'help'");
             System.out.println("to logout, enter 'logout'");
             System.out.println(RESET_TEXT_COLOR);

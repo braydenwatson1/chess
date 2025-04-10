@@ -1,15 +1,10 @@
 package client;
 
 
-import Model.LoginRequest;
-import Model.LogoutRequest;
-import Model.RegisterRequest;
-import Model.RegisterResult;
+import Model.*;
+import chess.ChessGame;
 import org.junit.jupiter.api.*;
 import server.Server;
-
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -98,52 +93,68 @@ public class ServerFacadeTests {
 
 
 
-//    @Test
-//    public void createGamePositiveTest() throws ResponseException {
-//        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-//        PrintStream originalSystemOut = System.out;  // Save original System.out
-//        System.setOut(new PrintStream(outputStream)); // Redirect System.out to the outputStream
-//
-//        RegisterResult result = ServerFacade.register(new RegisterRequest("bob", "bobsPassword", "bob@mail.com"));
-//        ServerFacade.cre
-//
-//        String output = outputStream.toString().trim();  // Capture printed content
-//        assertTrue(output.contains("You have been logged out"), "Output was: " + output);
-//
-//        System.setOut(originalSystemOut);
-//    }
-//
-//    @Test
-//    public void createGameNegativeTest() {
-//        assertEquals(-1, facade.createGame("gameName"));
-//    }
-//
-//    @Test
-//    public void listGamesPositiveTest() {
-//        facade.register("username", "password", "email");
-//        facade.createGame("gameName");
-//        assertEquals(1, facade.listGames().size());
-//    }
-//
-//    @Test
-//    public void listGamesNegativeTest() {
-//        assertEquals(facade.listGames(), HashSet.newHashSet(8));
-//    }
-//
-//    @Test
-//    public void joinGamePositiveTest() {
-//        facade.register("username", "password", "email");
-//        int id = facade.createGame("gameName");
-//        assertTrue(facade.joinGame(id, "WHITE"));
-//    }
-//
-//    @Test
-//    public void joinGameNegativeTest() {
-//        facade.register("username", "password", "email");
-//        int id = facade.createGame("gameName");
-//        facade.joinGame(id, "WHITE");
-//        assertFalse(facade.joinGame(id, "WHITE"));
-//    }
+    @Test
+    public void createGamePositiveTest() throws ResponseException {
+        RegisterResult result = serverFacade.register(new RegisterRequest("alice", "password", "alice@mail.com"));
+        String authToken = result.authToken();
+        assertDoesNotThrow(() -> {
+            serverFacade.createGame(new CreateGameRequest("MyGameName",authToken));
+        });
+    }
+
+    @Test
+    public void createGameNegativeTest() {
+        assertThrows(ResponseException.class, () -> {
+            // Using an invalid token
+            serverFacade.createGame(new CreateGameRequest("NewGAME!", "hippityHopityBADauthtoken"));
+        });
+    }
+
+    @Test
+    public void listGamesPositiveTest() {
+        assertDoesNotThrow(() -> {
+            RegisterResult result = serverFacade.register(new RegisterRequest("alice", "password", "alice@mail.com"));
+            String authToken = result.authToken();
+            serverFacade.createGame(new CreateGameRequest("CoolGame",authToken));
+            serverFacade.createGame(new CreateGameRequest("CoolGameAGAIN",authToken));
+
+            var resultList = serverFacade.listGames(new ListRequest(authToken));
+            assertNotNull(resultList);
+            assertTrue(resultList.games().size() >= 2);
+        });
+    }
+
+    @Test
+    public void listGamesNegativeTest() {
+        assertThrows(ResponseException.class, () -> {
+            // Invalid auth token
+            serverFacade.listGames(new ListRequest("WRONGTOKEN!!"));
+        });
+    }
+
+    @Test
+    public void joinGamePositiveTest() {
+        assertDoesNotThrow(() -> {
+            RegisterResult result = serverFacade.register(new RegisterRequest("charlie", "password", "charlie@mail.com"));
+            String authToken = result.authToken();
+            var createResult = serverFacade.createGame(new CreateGameRequest("joinME!", authToken));
+
+            int gameID = createResult.gameID();
+            serverFacade.joinGame(new JoinRequest(String.valueOf(createResult.gameID()), ChessGame.TeamColor.WHITE,authToken));
+        });
+    }
+
+    @Test
+    public void joinGameNegativeTest() {
+        assertThrows(ResponseException.class, () -> {
+            RegisterResult result = serverFacade.register(new RegisterRequest("dave", "password", "dave@mail.com"));
+            String authToken = result.authToken();
+            var createResult = serverFacade.createGame(new CreateGameRequest("joinME!", authToken));
+
+            // Attempt to join with a wrong game ID or invalid color
+            serverFacade.joinGame(new JoinRequest(String.valueOf(createResult.gameID()), ChessGame.TeamColor.BLACK,"WRONG")); // Invalid game ID and color
+        });
+    }
 
 
 }
