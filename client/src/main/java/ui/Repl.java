@@ -5,7 +5,6 @@ import Model.LoginResult;
 import Model.RegisterRequest;
 import Model.RegisterResult;
 import client.ServerFacade;
-import com.google.gson.Gson;
 
 import java.util.Scanner;
 
