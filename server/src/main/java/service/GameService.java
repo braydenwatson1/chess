@@ -36,7 +36,7 @@ public class GameService {
         HashSet<GameData> myHashSet = dbAccess.getGameDAO().listGames();
 
         if (myHashSet.isEmpty()) {
-            return new ListResult(null);
+            return new ListResult(new HashSet<>());
         }
         HashSet<GameListData> simplifiedGames = new HashSet<>();
         for (GameData game : myHashSet) {

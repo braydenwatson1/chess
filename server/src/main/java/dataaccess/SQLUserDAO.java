@@ -104,7 +104,7 @@ public class SQLUserDAO implements UserDAO {
         boolean isMatch = passwordMatches(rawPassword, hashedPassword);
 
         if (!isMatch) {
-            throw new DataAccessException("Incorrect password.");
+            throw new DataAccessException("Error: Incorrect password.");
         }
     }
 

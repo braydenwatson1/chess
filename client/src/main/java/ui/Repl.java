@@ -53,7 +53,7 @@ public class Repl {
                     printHelp();
                 } catch (Exception e) {  // Catch any exception
                     System.out.println(SET_TEXT_COLOR_RED);
-                    System.out.println("Login failed."); 
+                    System.out.println("Login failed.");
                     System.out.println(RESET_TEXT_COLOR);
                 }
             }

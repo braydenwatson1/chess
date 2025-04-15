@@ -33,10 +33,10 @@ public class LoginHandler implements Route {
             return gson.toJson(result);
 
         } catch (BadRequestException e) {
-            res.status(401); // Bad Request
+            res.status(400); // Bad Request
             return gson.toJson(new ErrorResponse("Error: " + e.getMessage()));
         } catch (DataAccessException e) {
-            res.status(500); // Internal Server Error
+            res.status(401); // Internal Server Error
             return gson.toJson(new ErrorResponse(e.getMessage()));
         }
     }

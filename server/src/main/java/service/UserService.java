@@ -48,8 +48,11 @@ public class UserService {
         String username = logReq.username();
         String password = logReq.password();
 
-        dbAccess.getUserDAO().authenticateUser(username, password); // This will throw if wrong
-
+        try {
+            dbAccess.getUserDAO().authenticateUser(username, password); // This will throw if wrong
+        } catch (Exception e) {
+            throw new DataAccessException(e.getMessage());
+        }
         String authToken = UUID.randomUUID().toString();
         dbAccess.getAuthDAO().addAuth(new AuthData(username, authToken));
 
