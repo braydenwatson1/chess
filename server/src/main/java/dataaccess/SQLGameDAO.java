@@ -26,7 +26,7 @@ public class SQLGameDAO implements GameDAO {
                 ps.executeUpdate();
             }
         } catch (SQLException | DataAccessException e) {
-            throw new RuntimeException(e);
+            throw new DataAccessException(e.getMessage());
         }
     }
 
@@ -36,7 +36,7 @@ public class SQLGameDAO implements GameDAO {
             try (var statement = myConnection.prepareStatement("TRUNCATE TABLE game")) {
                 statement.executeUpdate();
             } catch (SQLException e) {
-                throw new RuntimeException(e);
+                throw new DataAccessException(e.getMessage());
             }
         } catch (SQLException | DataAccessException e) {
             throw new DataAccessException(e.getMessage());

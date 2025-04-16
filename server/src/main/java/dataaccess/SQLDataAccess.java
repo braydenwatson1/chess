@@ -9,27 +9,14 @@ public class SQLDataAccess implements DataAccess {
     private final UserDAO userDAO;
     private final AuthDAO authDAO;
 
-    //initialize db essentially
+    //initialize db
     public SQLDataAccess() throws DataAccessException {
-//i dont know that this is necesary so its a comment for now
-//        try {
-//            DatabaseManager.createDatabase();
-//        } catch (DataAccessException e) {
-//            throw new DataAccessException(e.getMessage());
-//        }
-//
-//        try (var newConnection = DatabaseManager.getConnection()) {
-//        } catch (DataAccessException | SQLException e) {
-//            throw new DataAccessException(e.getMessage());
-//        }
-
         authDAO = new SQLAuthDAO();
         userDAO = new SQLUserDAO();
         gameDAO = new SQLGameDAO();
-
     }
 
-        //override methods:
+    //override methods:
     @Override
     public GameDAO getGameDAO() {
         return gameDAO;

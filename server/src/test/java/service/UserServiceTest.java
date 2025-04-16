@@ -61,7 +61,7 @@ public class UserServiceTest {
     }
 
     @Test
-    void logoutTestPositive() throws BadRequestException, ForbiddenException, DataAccessException {
+    void logoutTestPositive() throws BadRequestException, ForbiddenException, DataAccessException, UnauthorizedException {
         RegisterResult result = userService.register(new RegisterRequest("bob", "bob", "bob"));
         LoginResult LogResult = userService.login(new LoginRequest("bob", "bob"));
         assertDoesNotThrow(() -> {
@@ -70,7 +70,7 @@ public class UserServiceTest {
     }
 
     @Test
-    void logoutTestNegative() throws BadRequestException, ForbiddenException, DataAccessException {
+    void logoutTestNegative() throws BadRequestException, ForbiddenException, DataAccessException, UnauthorizedException {
         RegisterResult result = userService.register(new RegisterRequest("bob", "bob", "bob"));
         LoginResult LogResult = userService.login(new LoginRequest("bob", "bob"));
         assertThrows(Exception.class, () -> {

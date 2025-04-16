@@ -17,27 +17,28 @@ public class GameService {
         this.dbAccess = dbAccess;
     }
 
-    public ListResult listGames(ListRequest req) throws BadRequestException, DataAccessException {
+    public ListResult listGames(ListRequest req) throws BadRequestException, DataAccessException, UnauthorizedException {
         //if request is bad, error
         if (req == null || req.authToken() == null) {
-            assert req != null;
+            if (req == null) {throw new BadRequestException("listGame request is null");}
             throw new BadRequestException("listGame request cannot be null: " + req.toString());
         }
 
         String myAuthToken = req.authToken();
 
         //does authToken exist?
-         if (!authExist(myAuthToken)) {
-             throw new DataAccessException("Error: AuthToken does not exist.");
-         }
-
-
+        try {
+            AuthData auth = dbAccess.getAuthDAO().getAuth(myAuthToken);
+        } catch (DataAccessException e) {
+            throw new UnauthorizedException(e.getMessage());
+        }
         //get hashset of games from the db
         HashSet<GameData> myHashSet = dbAccess.getGameDAO().listGames();
 
         if (myHashSet.isEmpty()) {
             return new ListResult(new HashSet<>());
         }
+
         HashSet<GameListData> simplifiedGames = new HashSet<>();
         for (GameData game : myHashSet) {
             GameListData simplifiedGame = new GameListData(
@@ -55,7 +56,7 @@ public class GameService {
             return finalResult;
     }
 
-    public CreateGameResult createGame(CreateGameRequest createGameReq) throws BadRequestException, DataAccessException {
+    public CreateGameResult createGame(CreateGameRequest createGameReq) throws BadRequestException, DataAccessException, UnauthorizedException {
         //if request is bad, error
         if (createGameReq.gameName() == null || createGameReq.authToken() == null) {
             throw new BadRequestException("Error: create game request, game name, and authtoken cannot be null: " + createGameReq.toString());
@@ -65,10 +66,11 @@ public class GameService {
         String myAuthToken = createGameReq.authToken();
 
         //does authToken exist?
-        if (!authExist(myAuthToken)) {
-            throw new DataAccessException("Error: AuthToken does not exist.");
+        try {
+            AuthData auth = dbAccess.getAuthDAO().getAuth(myAuthToken);
+        } catch (DataAccessException e) {
+            throw new UnauthorizedException(e.getMessage());
         }
-
         //create a new game and add it to the db list
         HashSet<GameData> gamesList = dbAccess.getGameDAO().listGames();
         int oldLength = gamesList.size();
@@ -82,14 +84,15 @@ public class GameService {
             int newLength = newGamesList.size();
 
             if (newLength != (oldLength + 1)) {
-                throw new BadRequestException("new game did not get added to the db");
+                throw new BadRequestException("Error: new game did not get added to the db");
             }
+
 
         //return the new game name
         return new CreateGameResult(gameID);
     }
 
-    public void joinGame(JoinRequest joinReq) throws BadRequestException, DataAccessException, ForbiddenException {
+    public void joinGame(JoinRequest joinReq) throws BadRequestException, DataAccessException, ForbiddenException, UnauthorizedException {
         // If request is bad, error
         if (joinReq.playerColor() == null || joinReq.authToken() == null || joinReq.gameID() == null) {
             throw new BadRequestException("Error: create game request, game name, and authToken cannot be null" + joinReq.toString());
@@ -100,12 +103,17 @@ public class GameService {
         try {
             myGameID = Integer.parseInt(joinReq.gameID());
         } catch (NumberFormatException e) {
-            throw new BadRequestException("Error: Invalid Game ID format in the joinGame function in service " + joinReq.gameID() + " or tostringed: "+joinReq.gameID().toString());
+            throw new BadRequestException("Error: Invalid Game ID format in the joinGame function in service " + joinReq.gameID() + " or tostringed: " + joinReq.gameID().toString());
         }
 
         ChessGame.TeamColor myPlayColor = joinReq.playerColor();
         String myAuthToken = joinReq.authToken();
-        AuthData myAuthData = dbAccess.getAuthDAO().getAuth(myAuthToken);
+        AuthData myAuthData;
+        try {
+            myAuthData = dbAccess.getAuthDAO().getAuth(myAuthToken);
+        } catch (DataAccessException e) {
+            throw new UnauthorizedException(e.getMessage());
+        }
         String myUsername = myAuthData.username();
 
         if (!Objects.equals(myAuthData.authToken(), myAuthToken)) {
@@ -113,9 +121,7 @@ public class GameService {
         }
 
         // Does authToken exist?
-        if (!authExist(myAuthToken)) {
-            throw new BadRequestException("AuthToken does not exist.");
-        }
+        AuthData auth = dbAccess.getAuthDAO().getAuth(myAuthToken);
 
         GameData gameData = dbAccess.getGameDAO().getGame(myGameID);
 
@@ -142,29 +148,7 @@ public class GameService {
         }
     }
 
-
     public void clear() throws DataAccessException {
         dbAccess.getGameDAO().clear();
     }
-
-    //helper functions
-    private boolean authExist(String authToken){
-        try {
-            dbAccess.getAuthDAO().getAuth(authToken);
-        } catch (DataAccessException e) {
-            return false;
-        }
-        return true;
-    }
-
-    private boolean authMatchUsername(String authToken, String username) throws DataAccessException {
-     AuthData authData = dbAccess.getAuthDAO().getAuth(authToken);
-     String correctUsername = authData.username();
-     String correctAuth = authData.authToken();
-     if (Objects.equals(username, correctUsername) && Objects.equals(authToken, correctAuth)) {
-         return true;
-     }
-     return false;
-    }
-
 }

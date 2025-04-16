@@ -5,6 +5,7 @@ import Model.CreateGameResult;
 import Model.ErrorResponse;
 import service.BadRequestException;
 import service.GameService;
+import service.UnauthorizedException;
 import spark.Request;
 import spark.Response;
 import spark.Route;
@@ -47,7 +48,10 @@ public class CreateGameHandler implements Route {
             res.status(400); // Bad Request
             return gson.toJson(new ErrorResponse(e.getMessage()));
         } catch (DataAccessException e) {
-            res.status(401); // Internal Server Error
+            res.status(500); // Internal Server Error
+            return gson.toJson(new ErrorResponse(e.getMessage()));
+        } catch (UnauthorizedException e) {
+            res.status(401);
             return gson.toJson(new ErrorResponse(e.getMessage()));
         }
     }

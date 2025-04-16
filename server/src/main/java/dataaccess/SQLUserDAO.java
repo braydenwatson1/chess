@@ -2,6 +2,8 @@ package dataaccess;
 
 import Model.UserData;
 import org.mindrot.jbcrypt.BCrypt;
+import service.UnauthorizedException;
+
 import java.sql.*;
 
 public class SQLUserDAO implements UserDAO {
@@ -97,14 +99,14 @@ public class SQLUserDAO implements UserDAO {
     }
 
     @Override
-    public void authenticateUser(String username, String rawPassword) throws DataAccessException {
+    public void authenticateUser(String username, String rawPassword) throws DataAccessException, UnauthorizedException {
         UserData user = getUser(username);
         String hashedPassword = user.password();
 
         boolean isMatch = passwordMatches(rawPassword, hashedPassword);
 
         if (!isMatch) {
-            throw new DataAccessException("Error: Incorrect password.");
+            throw new UnauthorizedException("Error: Incorrect password.");
         }
     }
 

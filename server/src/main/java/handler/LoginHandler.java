@@ -4,6 +4,8 @@ import Model.ErrorResponse;
 import Model.LoginRequest;
 import Model.LoginResult;
 import service.BadRequestException;
+import service.ForbiddenException;
+import service.UnauthorizedException;
 import service.UserService;
 import spark.Request;
 import spark.Response;
@@ -36,6 +38,9 @@ public class LoginHandler implements Route {
             res.status(400); // Bad Request
             return gson.toJson(new ErrorResponse("Error: " + e.getMessage()));
         } catch (DataAccessException e) {
+            res.status(500); // Internal Server Error
+            return gson.toJson(new ErrorResponse(e.getMessage()));
+        } catch (UnauthorizedException e) {
             res.status(401); // Internal Server Error
             return gson.toJson(new ErrorResponse(e.getMessage()));
         }

@@ -3,9 +3,6 @@ package service;
 import Model.*;
 import dataaccess.DataAccess;
 import dataaccess.DataAccessException;
-import org.mindrot.jbcrypt.BCrypt;
-
-import java.util.Objects;
 import java.util.UUID;
 
 public class UserService {
@@ -19,7 +16,7 @@ public class UserService {
 
     public RegisterResult register(RegisterRequest regReq) throws BadRequestException, DataAccessException, ForbiddenException {
         if (regReq == null || regReq.username() == null || regReq.password() == null || regReq.email() == null) {
-            throw new BadRequestException("Error: Missing required fields in RegisterRequest");
+            throw new BadRequestException("Error. Bad Request: Missing required fields in RegisterRequest");
         }
 
         String username = regReq.username();
@@ -27,7 +24,7 @@ public class UserService {
         String email = regReq.email();
 
         if (dbAccess.getUserDAO().userExists(username)) {
-            throw new ForbiddenException("Error: User already exists");
+            throw new ForbiddenException("Error: Username: \"" + username + "\" already exists");
         }
 
         // No hashing here — let DAO handle it
@@ -40,7 +37,7 @@ public class UserService {
         return new RegisterResult(username, authToken);
     }
 
-    public LoginResult login(LoginRequest logReq) throws BadRequestException, DataAccessException {
+    public LoginResult login(LoginRequest logReq) throws BadRequestException, DataAccessException, UnauthorizedException {
         if (logReq == null || logReq.username() == null || logReq.password() == null) {
             throw new BadRequestException("Error: Missing username or password in LoginRequest");
         }
@@ -49,9 +46,9 @@ public class UserService {
         String password = logReq.password();
 
         try {
-            dbAccess.getUserDAO().authenticateUser(username, password); // This will throw if wrong
-        } catch (Exception e) {
-            throw new DataAccessException(e.getMessage());
+            dbAccess.getUserDAO().authenticateUser(username, password);
+        } catch (DataAccessException e) {
+            throw new UnauthorizedException(e.getMessage());
         }
         String authToken = UUID.randomUUID().toString();
         dbAccess.getAuthDAO().addAuth(new AuthData(username, authToken));
@@ -59,25 +56,24 @@ public class UserService {
         return new LoginResult(username, authToken);
     }
 
-        public void logout(LogoutRequest logReq) throws BadRequestException, DataAccessException {
-            //if request is bad, error
-            if (logReq == null || logReq.authToken() == null) {
-                throw new BadRequestException("Error: AuthToken cannot be null. See UserService class: logout() function");
-            }
-
-            //does the authToken exist?
-            try {
-                AuthData trythis = dbAccess.getAuthDAO().getAuth(logReq.authToken());
-            } catch (DataAccessException e) {
-                throw new DataAccessException(e.getMessage());
-            }
-            AuthData auth = dbAccess.getAuthDAO().getAuth(logReq.authToken());
-
-            //delete the authToken
-            //this function deletes the whole authData object, not just the
-            // authtoken string from the object it finds it in
-            dbAccess.getAuthDAO().deleteAuth(auth.authToken());
+    public void logout(LogoutRequest logReq) throws BadRequestException, DataAccessException, UnauthorizedException {
+        //if request is bad, error
+        if (logReq == null || logReq.authToken() == null) {
+            throw new BadRequestException("Error: AuthToken cannot be null. See UserService class: logout() function");
         }
+
+        //does the authToken exist? will throw error if not
+        AuthData auth;
+        try {
+            auth = dbAccess.getAuthDAO().getAuth(logReq.authToken());
+        } catch (DataAccessException e) {
+            throw new UnauthorizedException(e.getMessage());
+        }
+        //delete the authToken
+        //this function deletes the whole authData object, not just the
+        // authtoken string from the object it finds it in
+        dbAccess.getAuthDAO().deleteAuth(auth.authToken());
+    }
 
 }
 

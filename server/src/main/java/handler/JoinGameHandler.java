@@ -5,6 +5,7 @@ import service.BadRequestException;
 import service.ForbiddenException;
 import service.GameService;
 import Model.ErrorResponse;
+import service.UnauthorizedException;
 import spark.Request;
 import spark.Response;
 import spark.Route;
@@ -45,7 +46,7 @@ public class JoinGameHandler implements Route {
             res.status(400); // Bad Request
             return gson.toJson(new ErrorResponse(e.getMessage()));
         } catch (DataAccessException e) {
-            res.status(401); // Internal Server Error
+            res.status(500); // Internal Server Error
             return gson.toJson(new ErrorResponse(e.getMessage()));
         } catch (NumberFormatException e) {
             // Handle case where the gameID is not a valid integer
@@ -54,6 +55,9 @@ public class JoinGameHandler implements Route {
         } catch (ForbiddenException e) {
             res.status(403); // Bad Request
             return gson.toJson(new ErrorResponse("Error: Forbidden 403"));
+        } catch (UnauthorizedException e) {
+            res.status(401); // Bad Request
+            return gson.toJson(new ErrorResponse("Error: Unauthorized 401"));
         }
     }
 

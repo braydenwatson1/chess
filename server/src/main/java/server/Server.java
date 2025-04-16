@@ -45,6 +45,7 @@ public class Server {
         Spark.exception(BadRequestException.class, this::badRequestExceptionHandler);
         Spark.exception(DataAccessException.class, this::DataAccessExceptionHandler);
         Spark.exception(ForbiddenException.class, this::ForbiddenExceptionHandler);
+        Spark.exception(UnauthorizedException.class, this::UnauthorizedExceptionHandler);
         Spark.exception(Exception.class, this::otherExceptionHandler);
 
         //This line initializes the server and can be removed once you have a functioning endpoint
@@ -74,7 +75,7 @@ public class Server {
     }
 
     private void DataAccessExceptionHandler(DataAccessException e, Request req, Response res) {
-        res.status(401);
+        res.status(500);
         res.body("Error: 401 unauthorized");
 
     }
@@ -82,6 +83,12 @@ public class Server {
     private void ForbiddenExceptionHandler(ForbiddenException e, Request req, Response res) {
         res.status(403);
         res.body("Error: 403 forbidden");
+
+    }
+
+    private void UnauthorizedExceptionHandler(UnauthorizedException e, Request req, Response res) {
+        res.status(401);
+        res.body("Error: 401 Unauthorized");
 
     }
 

@@ -3,6 +3,8 @@ package handler;
 import Model.ErrorResponse;
 import Model.LogoutRequest;
 import service.BadRequestException;
+import service.ForbiddenException;
+import service.UnauthorizedException;
 import service.UserService;
 import spark.Request;
 import spark.Response;
@@ -41,6 +43,9 @@ public class LogoutHandler implements Route {
             res.status(400); // Bad Request
             return gson.toJson(new ErrorResponse(e.getMessage()));
         } catch (DataAccessException e) {
+            res.status(500);
+            return gson.toJson(new ErrorResponse(e.getMessage()));
+        } catch (UnauthorizedException e) {
             res.status(401);
             return gson.toJson(new ErrorResponse(e.getMessage()));
         }

@@ -36,7 +36,7 @@ public class GameServiceTest {
 
 
     @Test
-    void ListTestPositive() throws BadRequestException, DataAccessException, ForbiddenException {
+    void ListTestPositive() throws BadRequestException, DataAccessException, ForbiddenException, UnauthorizedException {
         //add authdata and game to db
         dbAccess.getAuthDAO().addAuth(new AuthData("bob","auth"));
         dbAccess.getGameDAO().addGame(new GameData(1,"joe", "kid","gameName", new ChessGame()));

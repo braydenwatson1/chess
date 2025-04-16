@@ -13,9 +13,9 @@ public class ClearAllService {
     }
 
     public void clearAll() throws DataAccessException {
-        dbAccess.getAuthDAO().clear();
-        dbAccess.getUserDAO().clear();
-        dbAccess.getGameDAO().clear();
+            dbAccess.getAuthDAO().clear();
+            dbAccess.getUserDAO().clear();
+            dbAccess.getGameDAO().clear();
     }
 
 }
